@@ -3,6 +3,7 @@
 int main()
 {
     int n, i, j, at[20], bt[20], t1, t2, ct[20], tat[20], wt[20], ttat = 0, twt = 0;
+    double Total_wt = 0, Total_tat = 0;
     printf("Enter the number of process(max 20): ");
     scanf("%d", &n);
     printf("\t\t\tEnter the processes\n");
@@ -57,7 +58,10 @@ int main()
     for (i = 0; i < n; i++)
     {
         printf("process[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\n", i + 1, at[i], bt[i], ct[i], wt[i], tat[i]);
+        Total_wt += wt[i];
+        Total_tat += tat[i];
     }
-
+    printf("Average waiting time : %.2f\n", Total_wt / n);
+    printf("Average turnaround time : %.2f\n", Total_tat / n);
     return 0;
 }
