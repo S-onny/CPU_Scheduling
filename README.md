@@ -9,3 +9,5 @@ Coding CPU Scheduling
   * Non-Preemptive Priority
   * Preemptive Priority
   * Non-Preemptive Priority with RR
+
+* CLI? GUI?
