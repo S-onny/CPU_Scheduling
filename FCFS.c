@@ -56,7 +56,7 @@ int main()
     printf("processes\tarrival\tburst\tcompletion\twaiting\tturnaround\n");
     for (i = 0; i < n; i++)
     {
-        printf("process[%d]\t[%d]\t[%d]\t[%d]\t[%d]\t[%d]\n", i + 1, at[i], bt[i], ct[i], wt[i], tat[i]);
+        printf("process[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\n", i + 1, at[i], bt[i], ct[i], wt[i], tat[i]);
     }
 
     return 0;
