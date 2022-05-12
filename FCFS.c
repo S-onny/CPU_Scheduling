@@ -1,67 +1,118 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int main()
 {
-    int num_proc, i, j, at[20], bt[20], t1, t2, ct[20], tat[20], wt[20], ttat = 0, twt = 0;
-    double Total_wt = 0, Total_tat = 0;
-    printf("Enter the number of process(max 20): ");
+    int num_proc, i, j, tq;
+    int* at, * bt, * p, * et, * ct, * tat, * wt, * pri;
+    double ttat = 0, twt = 0;
+    // num_proc = number of processes
+    // at = arrival time
+    // bt = burst time
+    // p = 프로세스 번호 저장
+    // et = excution time 프로세스 실행이 시작되는 시간
+    // ct = completion time 프로세스 실행이 끝나는 시간
+    // tat = turnaround time
+    // wt = waiting time
+    // ttat = total turnaround time
+    // twt = total waiting time
+    // pri = priority
+    // tq = time quantum
+
+    printf("Enter the number of process: ");
     scanf("%d", &num_proc);
-    printf("\t\t\tEnter the processes\n");
-    printf("processes\tArrival Time Burst time\n");
-    for (i = 0; i < num_proc; i++)
+    printf("\n\n");
+    at = malloc(sizeof(int) * num_proc); // arrival time 저장공간
+    bt = malloc(sizeof(int) * num_proc); // brust time 저장공간
+    p = malloc(sizeof(int) * num_proc); // 프로세스 번호 저장공간
+    et = malloc(sizeof(int) * num_proc); // 실행시간 저장공간
+    ct = malloc(sizeof(int) * num_proc); // completion time 저장공간
+    tat = malloc(sizeof(int) * num_proc); // turnaround time 저장공간
+    wt = malloc(sizeof(int) * num_proc); // waiting time 저장공간
+
+    printf("Enter the processes\n");
+    printf("Processes\tArrival Time\tBurst time\n");
+    for (i = 0; i < num_proc; i++) // at, bt 입력받고, 프로세스 번호 저장
     {
-        printf("process[%d]:\t\t", i + 1);
-        scanf("%d%d", &at[i], &bt[i]);
+        printf("Process[%d]:\t\t", i + 1);
+        scanf("%d %d", &at[i], &bt[i]);
+        p[i] = i + 1;
     }
-    for (i = 0; i < num_proc - 1; i++)
+    printf("\n\n");
+    for (i = 0; i < num_proc; i++) // 먼저 도착시간을 실행시간에 저장
     {
+        et[i] = at[i];
+    }
+
+    int min, temp;
+    for (i = 0; i < num_proc - 1; i++) // 배열 순서 정리.
+    {
+        min = i;
         for (j = i + 1; j < num_proc; j++)
         {
-            if (at[i] > at[j])
+            if (et[min] > et[j])
             {
-                t1 = at[i];
-                at[i] = at[j];
-                at[j] = t1;
+                temp = et[min];
+                et[min] = et[j];
+                et[j] = temp;
 
-                t2 = bt[i];
-                bt[i] = bt[j];
-                bt[j] = t2;
+                temp = p[min];
+                p[min] = p[j];
+                p[j] = temp;
+
+                temp = at[min];
+                at[min] = at[j];
+                at[j] = temp;
+
+                temp = bt[min];
+                bt[min] = bt[j];
+                bt[j] = temp;
+
+                min = j;
             }
         }
     }
-    for (i = 0; i < num_proc; i++)
+
+    for (i = 1; i < num_proc; i++) // n번째 도착한 프로세스의 실행시간 = n-1번째 도착한 프로세스의 실행시간(or 도착시간) + burst time
     {
-        if (i == 0)
+        j = i - 1;
+        if (et[j] < et[i] < et[j] + bt[j])
         {
-            ct[i] = at[i] + bt[i];
-        }
-        else
-        {
-            if (ct[i - 1] < at[i])
-            {
-                ct[i] = at[i] + bt[i];
-            }
-            else
-            {
-                ct[i] = ct[i - 1] + bt[i];
-            }
+            et[i] = et[j] + bt[j];
         }
     }
-    for (i = 0; i < num_proc; i++)
+
+    for (i = 0; i < num_proc; i++) // completion time 구하기
+    {
+        ct[i] = et[i] + bt[i];
+    }
+
+    for (i = 0; i < num_proc; i++) // turnaround time, waiting time, total turnaround time, total waiting time 구하기
     {
         tat[i] = ct[i] - at[i];
-        wt[i] = ct[i] - at[i] - bt[i];
-        ttat = ttat + tat[i];
-        twt = twt + wt[i];
+        wt[i] = et[i] - at[i];
+        ttat += tat[i];
+        twt += wt[i];
     }
-    printf("processes\tarrival\tburst\tcompletion\twaiting\tturnaround\n");
+
+    printf("==================================================================\n");
+    printf("Processes\tArrival\tBurst\tCompletion\tWaiting\tTurnaround\n");
+    printf("------------------------------------------------------------------\n");
     for (i = 0; i < num_proc; i++)
     {
-        printf("process[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\n", i + 1, at[i], bt[i], ct[i], wt[i], tat[i]);
-        Total_wt += wt[i];
-        Total_tat += tat[i];
+        printf("Process[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\n", p[i], at[i], bt[i], ct[i], wt[i], tat[i]);
+
     }
-    printf("Average waiting time : %.2f\n", Total_wt / num_proc);
-    printf("Average turnaround time : %.2f\n", Total_tat / num_proc);
+    printf("Average waiting time : %.2f\n", twt / num_proc);
+    printf("Average turnaround time : %.2f\n", ttat / num_proc);
+
+    free(at);
+    free(bt);
+    free(p);
+    free(et);
+    free(ct);
+    free(tat);
+    free(wt);
+
     return 0;
 }
