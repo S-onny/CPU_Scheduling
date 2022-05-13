@@ -39,30 +39,23 @@ int main()
         p[i] = i + 1;
     }
     printf("\n\n");
-    for (i = 0; i < num_proc; i++) // 먼저 도착시간을 실행시간에 저장
-    {
-        et[i] = at[i];
-    }
 
     int min, temp;
-    for (i = 0; i < num_proc - 1; i++) // 배열 순서 정리.
+    for (i = 0; i < num_proc - 1; i++) // at 배열의 순서를 정리하고, p와 bt의 순서도 at와 동일하게 정리
     {
         min = i;
         for (j = i + 1; j < num_proc; j++)
         {
-            if (et[min] > et[j])
+            if (at[min] > at[j])
             {
-                temp = et[min];
-                et[min] = et[j];
-                et[j] = temp;
-
-                temp = p[min];
-                p[min] = p[j];
-                p[j] = temp;
 
                 temp = at[min];
                 at[min] = at[j];
                 at[j] = temp;
+
+                temp = p[min];
+                p[min] = p[j];
+                p[j] = temp;
 
                 temp = bt[min];
                 bt[min] = bt[j];
@@ -71,6 +64,11 @@ int main()
                 min = j;
             }
         }
+    }
+
+    for (i = 0; i < num_proc; i++) // 도착시간을 실행시간에 저장
+    {
+        et[i] = at[i];
     }
 
     for (i = 1; i < num_proc; i++) // n번째 도착한 프로세스의 실행시간 = n-1번째 도착한 프로세스의 실행시간(or 도착시간) + burst time
@@ -105,6 +103,61 @@ int main()
     }
     printf("Average waiting time : %.2f\n", twt / num_proc);
     printf("Average turnaround time : %.2f\n", ttat / num_proc);
+
+
+
+    // 간트 차트 그리기
+    printf("\n\n\n\n");
+    printf("Gantt Chart");
+    printf("\n");
+
+    for (i = 0; i < num_proc; i++) // 맨 윗줄
+    {
+        printf(" ----");
+        
+        for (j = 0; j < bt[i]; j++)
+        {
+            printf("-");
+        }
+    }
+    printf("\n");
+
+    for (i = 0; i < num_proc; i++) // 가운뎃줄
+    {
+        printf("| P%d ", p[i]);
+        
+        for (j = 0; j < bt[i]; j++)
+        {
+            printf(" ");
+        }
+    }
+    printf("|");
+    printf("\n");
+
+    for (i = 0; i < num_proc; i++) // 아랫줄
+    {
+        printf(" ----");
+        
+        for (j = 0; j < bt[i]; j++)
+        {
+            printf("-");
+        }
+    }
+    printf("\n");
+
+    for (i = 0; i < num_proc; i++) // 아랫줄 밑 실행시간
+    {
+        printf("%d    ", et[i]);
+        for (j = 0; j < bt[i]; j++)
+        {
+            printf(" ");
+        }
+    }
+    printf("\b");
+    printf("%d", ct[num_proc-1]);
+    printf("\n");
+    // 간트 차트 끝
+
 
     free(at);
     free(bt);
