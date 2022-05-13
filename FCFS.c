@@ -122,7 +122,7 @@ int main()
     }
     printf("\n");
 
-    for (i = 0; i < num_proc; i++) // 가운뎃줄
+    for (i = 0; i < num_proc; i++) // 가운데 줄
     {
         printf("| P%d ", p[i]);
         
