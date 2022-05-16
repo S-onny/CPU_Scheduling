@@ -4,7 +4,7 @@
 
 int main()
 {
-    int num_proc = 0, i, j, tq, e;
+    int num_proc = 0, i, j, tq, e, min, temp, n, m, k;
     int* at, * bt, * p, * et, * ct, * tat, * wt, * pri;
     double ttat = 0, twt = 0;
     // num_proc = number of processes
@@ -49,7 +49,7 @@ int main()
         }
         printf("\n\n");
 
-        int min, temp;
+
         for (i = 0; i < num_proc - 1; i++) // at 배열의 순서를 정리하고, p와 bt의 순서도 at와 동일하게 정리
         {
             min = i;
@@ -80,10 +80,14 @@ int main()
             et[i] = at[i];
         }
 
-        for (i = 1; i < num_proc; i++) // n번째 도착한 프로세스의 실행시간 = n-1번째 도착한 프로세스의 실행시간(or 도착시간) + burst time
+        for (i = 1; i < num_proc; i++)     // n번째 도착한 프로세스의 실행시간 = n-1번째 도착한 프로세스의 실행시간(or 도착시간) + burst time
         {
             j = i - 1;
-            if (et[j] < et[i] < et[j] + bt[j])
+            if (et[j] <= et[i] && et[i] < et[j] + bt[j])
+            {
+                et[i] = et[j] + bt[j];
+            }
+            else if (et[i] < et[j])       // n번째 프로세스가 n-1번째 프로세스보다 일찍 도착했고, 다른 프로세스가 실행중일때 대기중이였던 경우
             {
                 et[i] = et[j] + bt[j];
             }
@@ -98,18 +102,21 @@ int main()
         {
             tat[i] = ct[i] - at[i];
             wt[i] = et[i] - at[i];
+            if (wt[i] < 0)              // n번째 프로세스가 n-1번째 프로세스의 실행이 끝난 다음에 왔을 경우 wt가 음수로 나오는 오류 고침
+                wt[i] = 0;
             ttat += tat[i];
             twt += wt[i];
         }
 
-        printf("==================================================================\n");
-        printf("Processes\tArrival\tBurst\tCompletion\tWaiting\tTurnaround\n");
-        printf("------------------------------------------------------------------\n");
+        printf("-------------------------------------------------------------------\n");
+        printf(" Processes\tArrival\tBurst\tCompletion\tWaiting\tTurnaround\n");
+        printf("-------------------------------------------------------------------\n");
         for (i = 0; i < num_proc; i++)
         {
-            printf("Process[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\n", p[i], at[i], bt[i], ct[i], wt[i], tat[i]);
+            printf(" Process[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\n", p[i], at[i], bt[i], ct[i], wt[i], tat[i]);
 
         }
+        printf("-------------------------------------------------------------------\n");
         printf("Average waiting time : %.2f\n", twt / num_proc);
         printf("Average turnaround time : %.2f\n", ttat / num_proc);
 
@@ -120,49 +127,132 @@ int main()
         printf("Gantt Chart");
         printf("\n");
 
-        for (i = 0; i < num_proc; i++) // 맨 윗줄
+
+        for (i = 1; i <= num_proc; i++) // 윗줄
         {
             printf(" ----");
 
-            for (j = 0; j < bt[i]; j++)
+            for (j = 0; j < bt[i - 1]; j++)
             {
                 printf("-");
             }
+
+            n = i - 1;
+            if (at[i] > ct[n])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간의 윗줄 "-" 
+            {
+                printf(" -");
+                for (k = 0; k < (at[i] - ct[n]); k++)
+                {
+                    printf("-");       // 일부러 -- 두개 출력했습니다. 너무 짧으면 밑에 실행시간 출력될 공간 부족할까봐
+                }
+            }
         }
+
+
+
+
+
         printf("\n");
 
-        for (i = 0; i < num_proc; i++) // 가운뎃줄
+        for (i = 1; i <= num_proc; i++) // 가운데 줄
         {
-            printf("| P%d ", p[i]);
 
-            for (j = 0; j < bt[i]; j++)
+            printf("| P%d ", p[i - 1]);
+
+            for (j = 0; j < bt[i - 1]; j++)
             {
                 printf(" ");
             }
+
+            n = i - 1;
+            if (at[i] > ct[n])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간의 가운데 줄의 공백
+            {
+                printf("| ");
+                for (k = 0; k < (at[i] - ct[n]); k++)
+                {
+                    printf(" ");
+                }
+            }
         }
+
+
+
         printf("|");
         printf("\n");
 
-        for (i = 0; i < num_proc; i++) // 아랫줄
+        for (i = 1; i <= num_proc; i++) // 아랫줄
         {
             printf(" ----");
 
-            for (j = 0; j < bt[i]; j++)
+            for (j = 0; j < bt[i - 1]; j++)
             {
                 printf("-");
             }
+
+            n = i - 1;
+            if (at[i] > ct[n])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간의 아랫줄 "-"
+            {
+                printf(" -");
+                for (k = 0; k < (at[i] - ct[n]); k++)
+                {
+                    printf("-");
+                }
+            }
         }
+
+
         printf("\n");
 
-        for (i = 0; i < num_proc; i++) // 아랫줄 밑 실행시간
+        int a, b, c, d, e, f;
+        for (i = 1; i <= num_proc; i++) // 아랫줄 밑 실행시간
         {
-            printf("%d    ", et[i]);
-            for (j = 0; j < bt[i]; j++)
+            printf("%d    ", et[i - 1]);
+            for (j = 0; j < bt[i - 1]; j++)
             {
                 printf(" ");
             }
+
+            a = et[i - 1];                                  // 자릿수만큼 공백 빼기
+            b = 0;
+            while (a != 0)
+            {
+                a = a / 10;
+                ++b;
+            }
+
+            for (c = 0; c < b - 1; c++)
+            {
+                printf("\b");
+            }
+
+            n = i - 1;                              // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간 밑의 실행시간 사이의 공백
+            if (at[i] > ct[n])
+            {
+                printf("%d ", ct[n]);
+                for (k = 0; k < (at[i] - ct[n]); k++)
+                {
+                    printf(" ");
+                }
+
+                d = ct[n];                              // 자릿수만큼 공백 빼기
+                e = 0;
+                while (d != 0)
+                {
+                    d = d / 10;
+                    ++e;
+                }
+
+                for (f = 0; f < e - 1; f++)
+                {
+                    printf("\b");
+                }
+
+            }
+
         }
-        printf("\b");
+
+
+
         printf("%d", ct[num_proc - 1]);
         printf("\n");
         // 간트 차트 끝
@@ -177,6 +267,7 @@ int main()
 
         if (e == 1)
         {
+            printf("===================================================================\n");
             printf("\n\n\n\n");
         }
         else if (e == 2)
@@ -194,5 +285,6 @@ int main()
     free(tat);
     free(wt);
 
+    system("pause");
     return 0;
 }
