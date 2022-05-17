@@ -160,7 +160,141 @@ int main()
         printf("-------------------------------------------------------------------\n");
         printf("Average waiting time : %.2f\n", twt / num_proc);
         printf("Average turnaround time : %.2f\n", ttat / num_proc);
+		
+		// 간트 차트 그리기
+        printf("\n\n");
+        printf("Gantt Chart");
+        printf("\n");
 
+
+        for (i = 1; i <= num_proc; i++) // 윗줄
+        {
+            printf(" ----");
+
+            for (j = 0; j < bt[i - 1]; j++)
+            {
+                printf("-");
+            }
+
+            n = i - 1;
+            if (at[i] > ct[n])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간의 윗줄 "-" 
+            {
+                printf(" -");
+                for (k = 0; k < (at[i] - ct[n]); k++)
+                {
+                    printf("-");    
+                }
+            }
+        }
+
+
+
+
+
+        printf("\n");
+
+        for (i = 1; i <= num_proc; i++) // 가운데 줄
+        {
+
+            printf("| P%d ", p[i - 1]);
+
+            for (j = 0; j < bt[i - 1]; j++)
+            {
+                printf(" ");
+            }
+
+            n = i - 1;
+            if (at[i] > ct[n])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간의 가운데 줄의 공백
+            {
+                printf("| ");
+                for (k = 0; k < (at[i] - ct[n]); k++)
+                {
+                    printf(" ");
+                }
+            }
+        }
+
+
+
+        printf("|");
+        printf("\n");
+
+        for (i = 1; i <= num_proc; i++) // 아랫줄
+        {
+            printf(" ----");
+
+            for (j = 0; j < bt[i - 1]; j++)
+            {
+                printf("-");
+            }
+
+            n = i - 1;
+            if (at[i] > ct[n])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간의 아랫줄 "-"
+            {
+                printf(" -");
+                for (k = 0; k < (at[i] - ct[n]); k++)
+                {
+                    printf("-");
+                }
+            }
+        }
+
+
+        printf("\n");
+
+        int a, b, c, d, e, f;
+        for (i = 1; i <= num_proc; i++) // 아랫줄 밑 실행시간
+        {
+            printf("%d    ", et[i - 1]);
+            for (j = 0; j < bt[i - 1]; j++)
+            {
+                printf(" ");
+            }
+
+            a = et[i - 1];                                  // 자릿수만큼 공백 빼기
+            b = 0;
+            while (a != 0)
+            {
+                a = a / 10;
+                ++b;
+            }
+
+            for (c = 0; c < b - 1; c++)
+            {
+                printf("\b");
+            }
+
+            n = i - 1;                              // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간 밑의 실행시간 사이의 공백
+            if (at[i] > ct[n])
+            {
+                printf("%d ", ct[n]);
+                for (k = 0; k < (at[i] - ct[n]); k++)
+                {
+                    printf(" ");
+                }
+
+                d = ct[n];                              // 자릿수만큼 공백 빼기
+                e = 0;
+                while (d != 0)
+                {
+                    d = d / 10;
+                    ++e;
+                }
+
+                for (f = 0; f < e - 1; f++)
+                {
+                    printf("\b");
+                }
+
+            }
+
+        }
+
+
+
+        printf("%d", ct[num_proc - 1]);
+        printf("\n");
+        // 간트 차트 끝
 	free(p);
 	free(et);
 	free(bt);
