@@ -24,7 +24,7 @@ int compare_p(const void* p1, const void* p2){//pid순으로 정렬하기위한 
 }
 int main()
 {
-    int num_proc = 0, i, j, tq, e,time;
+    int num_proc = 0, i, j,k,n, gantt_index, tq, E,time;
     //int* at, * bt, * p, * et, * ct, * tat, * wt, * pri;
     double ttat = 0, twt = 0;
 	
@@ -71,7 +71,7 @@ int main()
 			procs[i].tat=0-1;
 		}
 		time=0;
-		j=0;
+		gantt_index=0;
 		int N=num_proc;
 		while(N>0){
 			int min_rem=INT_MAX;
@@ -85,22 +85,22 @@ int main()
 			}
 			if(min_rem_index== -1){
 				/*
-				if(j==0&&bt[j]==0){
-					p[j]=0;
-					et[j]=time;
+				if(gantt_index==0&&bt[j]==0){
+					p[gantt_index]=0;
+					et[gantt_index]=time;
 				}
 				else{
 					if (p[j] != 0) {
-						if (sizeof(p)/(sizeof(int)) < j+2)
+						if (sizeof(p)/(sizeof(int)) < gantt_index+2)
 							p=(int*)realloc(p,sizeof(p)*2);
 							et=(int*)realloc(et,sizeof(et)*2);
 							bt=(int*)realloc(bt,sizeof(bt)*2);
-						j++;
-						p[j]=0;
-						et[j]=time;
+						gantt_index++;
+						p[gantt_index]=0;
+						et[gantt_index]=time;
 					}
 				}
-				(bt[j])++;
+				(bt[gantt_index])++;
 				*/
 				time++;
 				continue;
@@ -112,22 +112,22 @@ int main()
 				(procs[i].wt)++;
 			}
 			(procs[min_rem_index].rem)--;
-			if(j==0&&bt[j]==0){
-				p[j]=procs[min_rem_index].p;
-				et[j]=time;
+			if(gantt_index==0&&bt[gantt_index]==0){
+				p[gantt_index]=procs[min_rem_index].p;
+				et[gantt_index]=time;
 			}
 			else{
-				if (p[j] != procs[min_rem_index].p) {
-					if (sizeof(p)/(sizeof(int)) < j+2)
+				if (p[gantt_index] != procs[min_rem_index].p) {
+					if (sizeof(p)/(sizeof(int)) < gantt_index+2)
 						p=(int*)realloc(p,sizeof(p)*2);
 						et=(int*)realloc(et,sizeof(et)*2);
 						bt=(int*)realloc(bt,sizeof(bt)*2);
-					j++;
-					p[j]=procs[min_rem_index].p;
-					et[j]=time;
+					gantt_index++;
+					p[gantt_index]=procs[min_rem_index].p;
+					et[gantt_index]=time;
 				}
 			}
-				(bt[j])++;
+				(bt[gantt_index])++;
 			if(procs[min_rem_index].et == -1) procs[min_rem_index].et=time;
 			if(procs[min_rem_index].rem == 0){
 				procs[min_rem_index].ct=time+1;
@@ -167,7 +167,7 @@ int main()
         printf("\n");
 
 
-        for (i = 1; i <= num_proc; i++) // 윗줄
+        for (i = 1; i <= gantt_index+1; i++) // 윗줄
         {
             printf(" ----");
 
@@ -177,10 +177,10 @@ int main()
             }
 
             n = i - 1;
-            if (at[i] > ct[n])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간의 윗줄 "-" 
+            if (et[i] > et[n]+bt[n])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간의 윗줄 "-" 
             {
                 printf(" -");
-                for (k = 0; k < (at[i] - ct[n]); k++)
+                for (k = 0; k < et[i] - (et[n]+bt[n]); k++)
                 {
                     printf("-");    
                 }
@@ -193,7 +193,7 @@ int main()
 
         printf("\n");
 
-        for (i = 1; i <= num_proc; i++) // 가운데 줄
+        for (i = 1; i <= gantt_index+1; i++) // 가운데 줄
         {
 
             printf("| P%d ", p[i - 1]);
@@ -204,10 +204,10 @@ int main()
             }
 
             n = i - 1;
-            if (at[i] > ct[n])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간의 가운데 줄의 공백
+            if (et[i] > et[n]+bt[n])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간의 가운데 줄의 공백
             {
                 printf("| ");
-                for (k = 0; k < (at[i] - ct[n]); k++)
+                for (k = 0; k < (et[i] - (et[n]+bt[n])); k++)
                 {
                     printf(" ");
                 }
@@ -219,7 +219,7 @@ int main()
         printf("|");
         printf("\n");
 
-        for (i = 1; i <= num_proc; i++) // 아랫줄
+        for (i = 1; i <= gantt_index+1; i++) // 아랫줄
         {
             printf(" ----");
 
@@ -229,10 +229,10 @@ int main()
             }
 
             n = i - 1;
-            if (at[i] > ct[n])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간의 아랫줄 "-"
+            if (et[i] > et[n]+bt[n])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간의 아랫줄 "-"
             {
                 printf(" -");
-                for (k = 0; k < (at[i] - ct[n]); k++)
+                for (k = 0; k < (et[i] - (et[n]+bt[n])); k++)
                 {
                     printf("-");
                 }
@@ -243,7 +243,7 @@ int main()
         printf("\n");
 
         int a, b, c, d, e, f;
-        for (i = 1; i <= num_proc; i++) // 아랫줄 밑 실행시간
+        for (i = 1; i <= gantt_index+1; i++) // 아랫줄 밑 실행시간
         {
             printf("%d    ", et[i - 1]);
             for (j = 0; j < bt[i - 1]; j++)
@@ -265,15 +265,15 @@ int main()
             }
 
             n = i - 1;                              // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간 밑의 실행시간 사이의 공백
-            if (at[i] > ct[n])
+            if (et[i] > et[n]+bt[n])
             {
-                printf("%d ", ct[n]);
-                for (k = 0; k < (at[i] - ct[n]); k++)
+                printf("%d ", et[n]+bt[n]);
+                for (k = 0; k < (et[i] - (et[n]+bt[n])); k++)
                 {
                     printf(" ");
                 }
 
-                d = ct[n];                              // 자릿수만큼 공백 빼기
+                d = et[n]+bt[n];                              // 자릿수만큼 공백 빼기
                 e = 0;
                 while (d != 0)
                 {
@@ -292,7 +292,7 @@ int main()
 
 
 
-        printf("%d", ct[num_proc - 1]);
+        printf("%d", et[gantt_index]+bt[gantt_index]);
         printf("\n");
         // 간트 차트 끝
 	free(p);
