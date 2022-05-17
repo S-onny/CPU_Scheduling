@@ -84,7 +84,6 @@ int main()
 				}
 			}
 			if(min_rem_index== -1){
-				printf("time:%d, IDLE\n",time);
 				/*
 				if(j==0&&bt[j]==0){
 					p[j]=0;
@@ -113,7 +112,6 @@ int main()
 				(procs[i].wt)++;
 			}
 			(procs[min_rem_index].rem)--;
-			printf("time:%d, process%d\n",time,procs[min_rem_index].p);
 			if(j==0&&bt[j]==0){
 				p[j]=procs[min_rem_index].p;
 				et[j]=time;
@@ -147,10 +145,22 @@ int main()
 			time++;
 		}
 		qsort(procs,num_proc,sizeof(PROC),compare_p);
-		for (i=0;i<j+1;i++){
-			printf("%d: p%d start:%d burst:%d\n",i,p[i],et[i],bt[i]);
+		for(i=0;i<num_proc;i++){
+			twt += procs[i].wt;
+			ttat += procs[i].tat;
 		}
-	
+	    printf("-------------------------------------------------------------------\n");
+        printf(" Processes\tArrival\tBurst\tCompletion\tWaiting\tTurnaround\n");
+        printf("-------------------------------------------------------------------\n");
+        for (i = 0; i < num_proc; i++)
+        {
+            printf(" Process[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\n", procs[i].p, procs[i].at, procs[i].bt, procs[i].ct, procs[i].wt, procs[i].tat);
+
+        }
+        printf("-------------------------------------------------------------------\n");
+        printf("Average waiting time : %.2f\n", twt / num_proc);
+        printf("Average turnaround time : %.2f\n", ttat / num_proc);
+
 	free(p);
 	free(et);
 	free(bt);
