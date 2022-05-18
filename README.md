@@ -12,4 +12,4 @@ Coding CPU Scheduling
 
 * CLI
 
-### Merge 하실때 그냥 master로 하셔도 괜찮습니다!
+#### Merge 하실때 그냥 master branch 하셔도 괜찮습니다!
