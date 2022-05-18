@@ -11,3 +11,5 @@ Coding CPU Scheduling
   * Non-Preemptive Priority with RR - 찬욱
 
 * CLI
+
+### Merge 하실때 그냥 master로 하셔도 괜찮습니다!
