@@ -13,7 +13,7 @@ typedef struct {
 	int wt;//wait time
 	int pri;//priority
 	int rem;//remain burst time
-	int c;
+	int c;//완료했으면 0 아니면 -1
 }PROC;//구조체 선언 
 int compare_a(const void* p1, const void* p2) {//arrival 순서 퀵 정렬을 위한 compare 함수
 	int proc_cmp;
@@ -26,7 +26,7 @@ int compare_p(const void* p1, const void* p2) {//pid순으로 정렬하기위한
 	return ((PROC*)p1)->p - ((PROC*)p2)->p;
 }
 void push(int *front, int *rear, int max, int value, int queue[]) {
-	//printf("push %d\n", value);
+
 	*rear = (*rear + 1) % max;
 	queue[*rear] = value;
 	}
@@ -34,7 +34,7 @@ int pop(int *front, int *rear, int max,int queue[]) {
 	if (*rear == *front)
 		return -1;
 	*front = (*front + 1) % max;
-	//printf("pop %d\n", queue[*front]);
+
 	return queue[*front];
 	}
 
@@ -56,14 +56,13 @@ int main()
 	int* g_p = (int*)malloc(sizeof(int));//간트차트를 그리기 위한 동적배열들
 	int* g_et = (int*)malloc(sizeof(int));//간트차트를 그리기 위한 동적배열들
 	int* g_bt = (int*)malloc(sizeof(int));//간트차트를 그리기 위한 동적배열들
-	int min_pri = INT_MAX;//실행가능한 프로세스 중 가장 짧은 남은시간
-	int queue_index = -1;// 실행가능한 프로세스중 가장 remain time이 짧은 프로세스의 index
+
 
 	while (1)//무한반복:탈출
 	{
-		int index = 0;
-		int queue_index = -1;
-		int at_index = 0;
+		int index = 0;		//Pop여부에 대한 인덱스
+		int queue_index = -1;	//현재 CPU점유중인 프로세스 인덱스
+		int at_index = 0;	//도착한 프로세스 인덱스
 		printf("Enter the number of process: ");
 		scanf("%d", &num_proc);
 		printf("\n\n");
@@ -84,7 +83,7 @@ int main()
 		printf("Enter the Time-Quantom: ");
 		scanf("%d", &tq);
 
-		qsort(procs, num_proc, sizeof(PROC), compare_a);//도착 순서대로 정렬(같을시 프로세스 번호대로)
+		qsort(procs, num_proc, sizeof(PROC), compare_a); //도착 순서대로 정렬(같을시 프로세스 번호대로)
 		printf("\n\n");
 
 
@@ -102,14 +101,14 @@ int main()
 		gantt_index = 0;
 		int N = num_proc;//N:실행이 끝나지 않은 프로세스 수. 입력된 프로세스수를 복사하여 초기화
 
-		if (at_index<num_proc && 0 == procs[at_index].at) {
+		if (at_index<num_proc && 0 == procs[at_index].at) {	//처음 도착한 프로세스 푸쉬
 			push(&front, &rear, num_proc + 1, at_index, queue);
 			at_index++;
 
 		}
 
 		while (N>0) { //종료조건: line136 
-			if (index == 0) {
+			if (index == 0) {	//인덱스가 0이면 pop하고 초기화
 				
 				queue_index = pop(&front, &rear, num_proc+1, queue);
 
@@ -135,7 +134,7 @@ int main()
 					time++;//시간흐름
 					continue;
 				}
-				if (procs[queue_index].p == g_p[gantt_index-1]) {
+				if (procs[queue_index].p == g_p[gantt_index-1]) {	//전 프로세스랑 현 프로세스 동일하면 간트인덱스 유지
 					gantt_index--;
 				}
 				else {
@@ -148,23 +147,22 @@ int main()
 				g_bt = (int*)realloc(g_bt, (2 + gantt_index)*sizeof(int));
 				index = 0;
 			}
-			//printf("%d %d left\n", N, procs[queue_index].rem);
 
-			for (i = 0; i<num_proc; i++) {//실행이 끝나지 않은 프로세스중 실행되지 않은 프로세스들의 대기시간 증가
+			for (i = 0; i<num_proc; i++) {	//실행이 끝나지 않은 프로세스중 실행되지 않은 프로세스들의 대기시간 증가
 				if (i!=queue_index && procs[i].at<=time && (procs[i].c == -1))
 					(procs[i].wt)++;
 			}
 			(procs[queue_index].rem)--;//실행중인 프로세스의 remain time 감소
 			(g_bt[gantt_index])++;
 			
-			if (at_index<num_proc && time+1 == procs[at_index].at) {
+			if (at_index<num_proc && time+1 == procs[at_index].at) {	//도착한 프로세스 푸쉬
 				push(&front, &rear, num_proc + 1, at_index, queue);
 				at_index++;
 
 			}
 
 			if (procs[queue_index].et == -1) procs[queue_index].et = time;//프로세스가 최초로 실행된 시간을 et에 저장
-			if (procs[queue_index].rem == 0)
+			if (procs[queue_index].rem == 0)	//실행완료되어 프로세스 바꿔주기
 			{
 				procs[queue_index].ct = time + 1;
 				procs[queue_index].tat = procs[queue_index].ct - procs[queue_index].at;
@@ -179,7 +177,7 @@ int main()
 
 
 			}
-			else if (tq == index+1)
+			else if (tq == index+1)	//time-quantom에 의해 프로세스 바꿔주기
 			{
 				
 				push(&front, &rear, num_proc+1, queue_index, queue);
@@ -368,5 +366,6 @@ int main()
 	free(g_et);
 	free(g_bt);
 	free(procs);
+	free(queue);
 
 }
