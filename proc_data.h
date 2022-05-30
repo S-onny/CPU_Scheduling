@@ -11,3 +11,5 @@ typedef struct {
 	int rem;//remain burst time
 	int c;//완료했으면 0 아니면 -1
 }PROC;
+
+int Process_load(FILE* fp,int* num_proc,int* tq, PROC* procs);
