@@ -28,11 +28,12 @@ void pre_pri(PROC* procs, int num_proc)
 		time=0;
 		gantt_index=0;
 		int N=num_proc;//N:실행이 끝나지 않은 프로세스 수. 입력된 프로세스수를 복사하여 초기화
-		while(N>0){ //종료조건: line97 
+		while(N>0){ //종료조건: line93
 			high_pri=INT_MAX;//최소값을 찾기 위해 int 형 최댓값 으로 초기화
 			high_pri_index=-1;// -1로 초기화. 현재 상태가 idle인지 구분하기 위함.
-			for(i=0;i<N;i++){//실행이 끝나지 않은 프로세스들중 most high priority프로세스의 index 찾기
+			for(i=0;i<num_proc;i++){//실행이 끝나지 않은 프로세스들중 most high priority프로세스의 index 찾기
 				if(procs[i].at>time) break;//아직 도착하지 않은 프로세스는 연산하지 않음
+				if(procs[i].c == 0) continue;//종료된 프로세스는 무시
 				if(procs[i].pri<high_pri){
 					high_pri_index=i;
 					high_pri=procs[i].pri;
@@ -60,12 +61,7 @@ void pre_pri(PROC* procs, int num_proc)
 				time++;//시간흐름
 				continue;
 			}
-			for(i=0;i<N;i++){//실행이 끝나지 않은 프로세스중 실행되지 않은 프로세스들의 대기시간 증가
-				if(procs[i].at>time) break;
-				if(i == high_pri_index)
-					continue;
-				(procs[i].wt)++;
-			}
+
 			(procs[high_pri_index].rem)--;//실행중인 프로세스의 remain time 감소
 			if(gantt_index==0&&g_bt[gantt_index]==0){//간트차트를 위한 동적 배열 채우기.첫번째로 실행되는 프로세스의 경우:
 				g_p[gantt_index]=procs[high_pri_index].p;
@@ -85,19 +81,22 @@ void pre_pri(PROC* procs, int num_proc)
 				(g_bt[gantt_index])++;
 			if(procs[high_pri_index].et == -1) procs[high_pri_index].et=time;//프로세스가 최초로 실행된 시간을 et에 저장
 			if(procs[high_pri_index].rem == 0)
-			{	//프로세스가 실행종료된 경우: 가장 마지막 index의 프로세스와 현재 프로세스 swap.
+			{	//프로세스가 실행종료된 경우:
 				procs[high_pri_index].ct=time+1;
-				procs[high_pri_index].tat=procs[high_pri_index].ct - procs[high_pri_index].at;
+				procs[min_rem_index].c=0;//is_completed!
+				procs[high_pri_index].tat=procs[high_pri_index].ct - procs[high_pri_index].at;//turnaroundtime=completetime-arivaltime
+				procs[high_pri_index].wt=procs[high_pri_index].tat - procs[high_pri_index].bt;//waitingtime=turnaroundtime-bursttime
+				//no need to swap now!
 				//PROC temp = procs[N-1];
 				//procs[N-1]=procs[high_pri_index];
 				//procs[high_pri_index]=temp;
-				swap(procs[N-1],procs[high_pri_index],temp);
+				//swap(procs[N-1],procs[high_pri_index],temp);
+				
 				N=N-1;//실행가능한 프로세스 수 감소
 				if(N==0) {//모든 프로세스가 실행종료된 경우 반복문 탈출
 					time++;
 					break;
 					}
-				qsort(procs,N,sizeof(PROC),compare_a);//실행가능한 프로세스들을 다시 arrival순서로 정렬.
 			}
 			
 			time++;//시간이 흐름
