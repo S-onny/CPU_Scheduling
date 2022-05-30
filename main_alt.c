@@ -9,23 +9,50 @@ void RR(PROC* procs, int num_proc, int tq);
 
 int main(int argc, char **argv) {
 	FILE *fp;
+	int num_proc = 0;
+	int tq = 0;
 	if (argc != 2)
 	{
 		printf("no file input!", argv[0]);
+		return 0;
 	}
-	else if ((fp = fopen(argv[1], "rt")) == NULL)
+	if ((fp = fopen(argv[1], "rt")) == NULL)
 	{
 		fprintf( stderr, "error: opening file %s failed! \n", argv[1]);
+		return 0;
 	}
-	else
+	int num_proc = 1;
+	int tq = 0;
+	int ret;
+	PROC* procs = (PROC*)malloc(sizeof(PROC)*num_proc);//프로세스 구조체 배열
 	
-	while (1) {
-		char s1 = 0;
-		int num_proc = 0;
-		int tq = 0;
-		PROC* procs = (PROC*)malloc(sizeof(PROC));//프로세스 구조체 배열
+	ret=Process_load(fp,&num_proc,&tq,procs);
+	if (!ret) return 0;
+	 //FCFS
+	//[function here]
+	 //SJF
+	//[function here]
+	 //SRTF
+	//[function here]
+	 //RR
+	//[function here]
+	 //NON-Preemptive Priority
+	//[function here]
+	 //Preemptive Priority
+	//[function here]
+	 //Non-Preemptive Priority with RR
+	//[function here]
+	
+
+	
+	
+	while (1) 
+	{
+		//입력옵션 선택 코드(미완). 과제 조건과 맞지 않아 일단 주석처리
+		/*
 		int file_or_manual=-1;
-		while(file_or_manual!=0 || file_or_manual!=1){
+		while(file_or_manual!=0 || file_or_manual!=1)
+		{
 			printf("Processes input-Choose Your Option!\n\tfrom file [0], manual input[1]:");
 			scanf("%d", &file_or_manual);
 			printf("\n");
@@ -35,30 +62,36 @@ int main(int argc, char **argv) {
 		char str[1024];
 		FILE *fp;
 		int exit=-1;
-		while((!file_or_manual)&&(exit!=1 || exit!=2)){
+		while((!file_or_manual)&&(exit!=1 || exit!=2))
+		{
 			printf("Option: Processes Input by File\n");
 			printf("Warning: only files in same directory with this EXE file work!\n");
 			printf("enter filename(ex: process.txt) or Q to manual input: ");
 			scanf("%s", str);
 			while (getchar() != '\n');//flush input buffer
-			if(0==strcmp(str,"Q")){
+			if(0==strcmp(str,"Q"))
+			{
 				file_or_manual=1;
 			}
-			if((fp=fopen(str,"rt"))==NULL){
+			if((fp=fopen(str,"rt"))==NULL)
+			{
 				printf("file open error: %s\n", str);
 				printf("retry[0] manual input[1]:");
-				while((!file_or_manual)&&(exit!=1 || exit!=2)){
-					scanf("%d",)
+				while((!file_or_manual)&&(exit!=1 || exit!=2))
+				{
+					//scanf("%d",)
 				}
 				
 			}
-			else{
+			else
+			{
 				
 			}
 		}
+		*/
 
-
-
+		//////이전 코드들. 다른 코드 작성을 위해 주석 처리해뒀습니다.
+		/*
 		printf("Enter the number of process: ");
 		scanf("%d", &num_proc);
 		printf("\n\n");
@@ -81,6 +114,7 @@ int main(int argc, char **argv) {
 			procs[i].tat = 0;
 			procs[i].c = -1;
 		}
+
 		while (1) {
 			char s = 0;
 			s1 = 0;
@@ -146,6 +180,10 @@ int main(int argc, char **argv) {
 		free(procs);
 		if (s1 == '3')
 			break;
+		*/
+		
+		
 	}
 	return 0;
+	free(procs);
 }
