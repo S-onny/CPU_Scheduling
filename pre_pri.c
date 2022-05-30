@@ -6,7 +6,7 @@
 
 int compare_a(const void* p1, const void* p2);
 int compare_p(const void* p1, const void* p2);
-void SRTF(PROC* procs, int num_proc)
+void pre_pri(PROC* procs, int num_proc)
 {
     int i,j,k,n, gantt_index,E, tq,time;
     double ttat = 0, twt = 0;
@@ -20,24 +20,24 @@ void SRTF(PROC* procs, int num_proc)
 	int* g_p=(int*)malloc(sizeof(int)*num_proc);//간트차트를 그리기 위한 동적배열들
 	int* g_et=(int*)malloc(sizeof(int)*num_proc);//간트차트를 그리기 위한 동적배열들
 	int* g_bt=(int*)malloc(sizeof(int)*num_proc);//간트차트를 그리기 위한 동적배열들
-	int min_rem=INT_MAX;//실행가능한 프로세스 중 가장 짧은 남은시간
-	int min_rem_index=-1;// 실행가능한 프로세스중 가장 remain time이 짧은 프로세스의 index
+	int max_pri=0;//실행가능한 프로세스 중 가장 high priority 저장
+	int max_pri_index=-1;// 실행가능한 프로세스중 가장priority 높은 프로세스의 index
 
         
 		time=0;
 		gantt_index=0;
 		int N=num_proc;//N:실행이 끝나지 않은 프로세스 수. 입력된 프로세스수를 복사하여 초기화
 		while(N>0){ //종료조건: line97 
-			min_rem=INT_MAX;//최솟값을 찾기 위해 무한 대신 int가 가질 수 있는 최곳값으로 초기화
-			min_rem_index=-1;// -1로 초기화. 현재 상태가 idle인지 구분하기 위함.
-			for(i=0;i<N;i++){//실행이 끝나지 않은 프로세스들중 가장 남음시간이 짧은 프로세스의 index 찾기
+			max_pri=0;//최댓값을 찾기 위해 음이아닌 정수중 최솟값 0 으로 초기화
+			max_pri_index=-1;// -1로 초기화. 현재 상태가 idle인지 구분하기 위함.
+			for(i=0;i<N;i++){//실행이 끝나지 않은 프로세스들중 most high priority프로세스의 index 찾기
 				if(procs[i].at>time) break;//아직 도착하지 않은 프로세스는 연산하지 않음
-				if(procs[i].rem<min_rem){
-					min_rem_index=i;
-					min_rem=procs[i].rem;
+				if(procs[i].pri>max_pri){
+					max_pri_index=i;
+					max_pri=procs[i].pri;
 				}
 			}
-			if(min_rem_index== -1){//현재 실행가능한 프로세스 없음(idle)
+			if(max_pri_index== -1){//현재 실행가능한 프로세스 없음(idle)
 				/*//이부분은 다른형태의 간트차트를 그리기 위한 예비 코드임
 				if(gantt_index==0&&g_bt[j]==0){
 					g_p[gantt_index]=0;
@@ -61,36 +61,36 @@ void SRTF(PROC* procs, int num_proc)
 			}
 			for(i=0;i<N;i++){//실행이 끝나지 않은 프로세스중 실행되지 않은 프로세스들의 대기시간 증가
 				if(procs[i].at>time) break;
-				if(i == min_rem_index)
+				if(i == max_pri_index)
 					continue;
 				(procs[i].wt)++;
 			}
-			(procs[min_rem_index].rem)--;//실행중인 프로세스의 remain time 감소
+			(procs[max_pri_index].rem)--;//실행중인 프로세스의 remain time 감소
 			if(gantt_index==0&&g_bt[gantt_index]==0){//간트차트를 위한 동적 배열 채우기.첫번째로 실행되는 프로세스의 경우:
-				g_p[gantt_index]=procs[min_rem_index].p;
+				g_p[gantt_index]=procs[max_pri_index].p;
 				g_et[gantt_index]=time;
 			}
 			else{//첫번째로 실행되는 것이 아닌 프로세스의 경우
-				if (g_p[gantt_index] != procs[min_rem_index].p) {//이전에 실행된 프로세스와 다른 프로세스일 경우: 다음 index에 저장
+				if (g_p[gantt_index] != procs[max_pri_index].p) {//이전time unit에서 실행된 프로세스와 다른 프로세스일 경우: 다음 index에 저장
 					if (sizeof(g_p)/(sizeof(int)) < gantt_index+2)//동적배열들의 할당크기가 부족할 경우 재할당
 						g_p=(int*)realloc(g_p,sizeof(g_p)*2);
 						g_et=(int*)realloc(g_et,sizeof(g_et)*2);
 						g_bt=(int*)realloc(g_bt,sizeof(g_bt)*2);
 					gantt_index++;
-					g_p[gantt_index]=procs[min_rem_index].p;
+					g_p[gantt_index]=procs[max_pri_index].p;
 					g_et[gantt_index]=time;
 				}
 			}
 				(g_bt[gantt_index])++;
-			if(procs[min_rem_index].et == -1) procs[min_rem_index].et=time;//프로세스가 최초로 실행된 시간을 et에 저장
-			if(procs[min_rem_index].rem == 0)
+			if(procs[max_pri_index].et == -1) procs[max_pri_index].et=time;//프로세스가 최초로 실행된 시간을 et에 저장
+			if(procs[max_pri_index].rem == 0)
 			{	//프로세스가 실행종료된 경우: 가장 마지막 index의 프로세스와 현재 프로세스 swap.
-				procs[min_rem_index].ct=time+1;
-				procs[min_rem_index].tat=procs[min_rem_index].ct - procs[min_rem_index].at;
+				procs[max_pri_index].ct=time+1;
+				procs[max_pri_index].tat=procs[max_pri_index].ct - procs[max_pri_index].at;
 				//PROC temp = procs[N-1];
-				//procs[N-1]=procs[min_rem_index];
-				//procs[min_rem_index]=temp;
-				swap(procs[N-1],procs[min_rem_index],temp);
+				//procs[N-1]=procs[max_pri_index];
+				//procs[max_pri_index]=temp;
+				swap(procs[N-1],procs[max_pri_index],temp);
 				N=N-1;//실행가능한 프로세스 수 감소
 				if(N==0) {//모든 프로세스가 실행종료된 경우 반복문 탈출
 					time++;
