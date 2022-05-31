@@ -60,6 +60,7 @@ DATA* Make_dataIn(PROC* procArr,int num_proc){
 	}
 	return DataArr;
 }
+
 void Destroy_data(DATA* datas){
 	for(int i =0;i<7;i++){
 		if (datas[i].procs!=NULL) free(datas[i].procs);

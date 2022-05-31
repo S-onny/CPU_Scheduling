@@ -28,20 +28,23 @@ int main(int argc, char **argv) {
 	ret=Process_load(fp,&num_proc,&tq,procs);
 	if (!ret) return 0;
 	DATA* Datas=Make_dataIn(procs,num_proc);
-	 //FCFS
-	//[function here]
-	 //SJF
-	//[function here]
-	 //SRTF
-	//[function here]
-	 //RR
-	//[function here]
-	 //NON-Preemptive Priority
-	//[function here]
-	 //Preemptive Priority
-	//[function here]
-	 //Non-Preemptive Priority with RR
-	//[function here]
+	
+	
+	//FCFS(&(Datas[0]));
+	//SJF(&(Datas[1]));
+	//srtf(&(Datas[2]));
+	//RR(&(Datas[3]));
+	//np_priority(&(Datas[4]));
+	//pre_pri(&(Datas[5]));
+	//np_pri_rr(&(Datas[6]));
+	
+	/*
+	for (int i=0; i<7;i++){
+		
+	Print_table(&(Datas[i]));
+	Print_gantt(&(Datas[i]));
+	}
+	*/
 	
 
 	
