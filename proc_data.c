@@ -41,6 +41,35 @@ int Process_load(FILE* fp,int* num_proc, PROC* procs){
 
 	
 }
+
+PROC* Copy_processes(PROC* procs){
+	PROC* temp = (PROC*)malloc(sizeof(procs));
+	memcpy(temp,procs,sizeof(procs));
+	return temp;
+}
+DATA* Make_dataIn(PROC* procArr,int num_proc){
+	DATA* DataArr=(DATA*)malloc(sizeof(DATA)*7);
+	for(int i = 0; i<7; i++){
+		DataArr[i].procs=Copy_processes(PROC* procArr);
+		DataArr[i].g_p=NULL;
+		DataArr[i].g_et=NULL;
+		DataArr[i].g_bt=NULL;
+		DataArr[i].gantt_index=0;
+		
+	}
+	return DataArr;
+}
+void Destroy_data(DATA* datas){
+	for(int i =0;i<7;i++){
+		if (datas[i].procs!=NULL) free(datas[i].procs);
+		if(datas[i].g_p!=NULL){
+			free(datas[i].g_p);
+			free(datas[i].g_et);
+			free(datas[i].g_bt);
+		}
+		free(datas);
+	}
+}
 int compare_a(const void* p1, const void* p2) {//arrival 순서 퀵 정렬을 위한 compare 함수
 	int proc_cmp;
 	proc_cmp = ((PROC*)p1)->at - ((PROC*)p2)->at;
