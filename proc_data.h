@@ -13,6 +13,7 @@ typedef struct {
 }PROC;
 typedef struct{
 	PROC* procs;
+	int num_proc;
 	int* g_p;
 	int* g_et;
 	int* g_bt;
