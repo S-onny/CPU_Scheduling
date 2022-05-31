@@ -50,6 +50,7 @@ PROC* Copy_processes(PROC* procs){
 DATA* Make_dataIn(PROC* procArr,int num_proc){
 	DATA* DataArr=(DATA*)malloc(sizeof(DATA)*7);
 	for(int i = 0; i<7; i++){
+		DataArr[i].num_proc=num_proc;
 		DataArr[i].procs=Copy_processes(PROC* procArr);
 		DataArr[i].g_p=NULL;
 		DataArr[i].g_et=NULL;

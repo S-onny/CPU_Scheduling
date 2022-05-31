@@ -7,8 +7,9 @@
 
 int compare_a(const void* p1, const void* p2);
 int compare_p(const void* p1, const void* p2);
-void pre_pri(DATA* data, int num_proc)
+void pre_pri(DATA* data)
 {
+	int num_proc=(data->num_proc);
 	PROC* procs=(data->procs);
     int i,j,k,n, gantt_index,E, tq,time;
     double ttat = 0, twt = 0;
