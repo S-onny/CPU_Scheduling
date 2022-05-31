@@ -25,9 +25,9 @@ int main(int argc, char **argv) {
 	int tq = 0;
 	int ret;
 	PROC* procs = (PROC*)malloc(sizeof(PROC)*num_proc);//프로세스 구조체 배열
-	
 	ret=Process_load(fp,&num_proc,&tq,procs);
 	if (!ret) return 0;
+	DATA* Datas=Make_dataIn(procs,num_proc);
 	 //FCFS
 	//[function here]
 	 //SJF
@@ -186,4 +186,5 @@ int main(int argc, char **argv) {
 	}
 	return 0;
 	free(procs);
+	Destroy_data(datas);
 }

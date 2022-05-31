@@ -7,8 +7,9 @@
 
 int compare_a(const void* p1, const void* p2);
 int compare_p(const void* p1, const void* p2);
-void pre_pri(PROC* procs, int num_proc)
+void pre_pri(DATA* data, int num_proc)
 {
+	PROC* procs=(data->procs);
     int i,j,k,n, gantt_index,E, tq,time;
     double ttat = 0, twt = 0;
 	// ijkn: 반복문을 위한 변수, gantt_index:간트차트를 그리기 위한 배열들의 index
@@ -102,8 +103,12 @@ void pre_pri(PROC* procs, int num_proc)
 			time++;//시간이 흐름
 		}
 		//프로세싱 종료
-		
+		//data에 프로세스 후 변경내용 저장
 		qsort(procs,num_proc,sizeof(PROC),compare_p);//procs를 다시 pid순으로 정렬
+		(data->g_p)=g_p;
+		(data->g_et)=g_et;
+		(data->g_bt)=g_bt;
+		(data->g_gantt_index)=gantt_index;
 		
 		for(i=0;i<num_proc;i++){//twt ttat 계산
 			twt += procs[i].wt;
@@ -268,10 +273,5 @@ void pre_pri(PROC* procs, int num_proc)
 		}
 		if (E==2) break;
 	
-	
-	
-	free(g_p);
-	free(g_et);
-	free(g_bt);
 	
 }
