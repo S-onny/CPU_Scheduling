@@ -228,18 +228,7 @@ int main()
                 printf(" ");
             }
 
-            a = et[i - 1];                                  // 자릿수만큼 공백 빼기
-            b = 0;
-            while (a != 0)
-            {
-                a = a / 10;
-                ++b;
-            }
-
-            for (c = 0; c < b - 1; c++)
-            {
-                printf("\b");
-            }
+            backspace(et[i - 1]);                   // 자릿수만큼 공백 빼기
                            
             if (at[i] > ct[i - 1])          // 프로세스 사이에 빈 시간이 있을경우에 출력되는 간트차트의 빈 공간 밑의 실행시간 사이의 공백
             {
@@ -249,18 +238,7 @@ int main()
                     printf(" ");
                 }
 
-                d = ct[i - 1];                              // 자릿수만큼 공백 빼기
-                e = 0;
-                while (d != 0)
-                {
-                    d = d / 10;
-                    ++e;
-                }
-
-                for (f = 0; f < e - 1; f++)
-                {
-                    printf("\b");
-                }
+                backspace(ct[i - 1]);               // 자릿수만큼 공백 빼기
 
             }
 
@@ -320,8 +298,9 @@ int main()
                     }
                     printf("|     P%d      ", p[e]);
                     backspace(p[e]);
-                    printf("|     %d      |\n", bt[e]);
+                    printf("|     %d      ", bt[e]);
                     backspace(bt[e]);
+                    printf("|\n");
                 }
                 printf(" ------- ------------- ------------ \n");
             }
