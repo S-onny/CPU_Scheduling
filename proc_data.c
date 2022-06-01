@@ -13,8 +13,8 @@ int Process_load(FILE* fp, int* num_proc, int* tq, PROC* procs) {
 		return 0;
 	}
 
-	procs = (PROC*)realloc(procs, sizeof(PROC)*(*num_proc));
-	for (int i = 0; i<(*num_proc); i++)
+	procs = (PROC*)realloc(procs, sizeof(PROC) * (*num_proc));
+	for (int i = 0; i < (*num_proc); i++)
 	{
 		ret = fscanf(fp, "P%d %d %d %d", &(temp.p), &(temp.at), &(temp.bt), &(temp.pri));
 		if (ret == EOF)
@@ -42,16 +42,16 @@ int Process_load(FILE* fp, int* num_proc, int* tq, PROC* procs) {
 
 }
 
-PROC* Copy_processes(PROC* procs) {
-	PROC* temp = (PROC*)malloc(sizeof(procs));
-	memcpy(temp, procs, sizeof(procs));
+PROC* Copy_processes(PROC* procs, int num_proc) {
+	PROC* temp = (PROC*)malloc(sizeof(PROC)*num_proc);
+	memcpy(temp, procs, sizeof(PROC) * num_proc);
 	return temp;
 }
 DATA* Make_dataIn(PROC* procArr, int num_proc) {
 	DATA* DataArr = (DATA*)malloc(sizeof(DATA) * 7);
-	for (int i = 0; i<7; i++) {
+	for (int i = 0; i < 7; i++) {
 		DataArr[i].num_proc = num_proc;
-		DataArr[i].procs = Copy_processes(procArr);
+		DataArr[i].procs = Copy_processes(procArr, num_proc);
 		DataArr[i].g_p = NULL;
 		DataArr[i].g_et = NULL;
 		DataArr[i].g_bt = NULL;
@@ -62,7 +62,8 @@ DATA* Make_dataIn(PROC* procArr, int num_proc) {
 }
 
 void Destroy_data(DATA* datas) {
-	for (int i = 0; i<7; i++) {
+	for (int i = 0; i < 7; i++) {
+		
 		if (datas[i].procs != NULL) free(datas[i].procs);
 		if (datas[i].g_p != NULL) {
 			free(datas[i].g_p);
@@ -74,8 +75,10 @@ void Destroy_data(DATA* datas) {
 }
 void Print_table(DATA* datum) {
 	int np = datum->num_proc;
+	datum->twt = 0;
+	datum->ttat = 0;
 	qsort(datum->procs, np, sizeof(PROC), compare_p);//procs를 다시 pid순으로 정렬
-	
+
 	for (int i = 0; i < np; i++) {//twt ttat 계산
 		datum->twt += datum->procs[i].wt;
 		datum->ttat += datum->procs[i].tat;
@@ -89,8 +92,8 @@ void Print_table(DATA* datum) {
 
 	}
 	printf("-------------------------------------------------------------------\n");
-	printf("Average waiting time : %.2f\n", datum->twt / np);
-	printf("Average turnaround time : %.2f\n", datum->ttat / np);
+	printf("Average waiting time : %.2f\n", (float)datum->twt/np);
+	printf("Average turnaround time : %.2f\n", (float)datum->ttat/np);
 }
 void Print_gantt(DATA* datum) {
 
@@ -98,7 +101,7 @@ void Print_gantt(DATA* datum) {
 	int n;
 	// 간트 차트 그리기
 	printf("\n\n");
-	printf("Gantt Chart %d %d", datum->gantt_index, datum->g_p[datum->gantt_index]);
+	printf("Gantt Chart");
 	printf("\n");
 
 	for (int i = 1; i <= gt + 1; i++) // 윗줄
@@ -156,7 +159,7 @@ void Print_gantt(DATA* datum) {
 	printf("|");
 	printf("\n");
 
-	for (int i = 1; i <= gt+ 1; i++) // 아랫줄
+	for (int i = 1; i <= gt + 1; i++) // 아랫줄
 	{
 		printf(" ----");
 
