@@ -1,7 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #pragma warning(disable:4996)
-#define swap(x, y, temp) ( (temp)=(x), (x)=(y), (y)=(temp) ) 	// 배열 요소의 순서를 바꾸기 위한 함수
+#define swap(x, y, temp) ( (temp)=(x), (x)=(y), (y)=(temp) )        // 배열 요소의 순서를 바꾸기 위한 함수
+
+
+
+void backspace(const int* a)        // 두자릿수 이상의 숫자가 출력될 경우 backspace를 출력하는 함수
+{
+    int x, y, z;
+    x = a;
+    y = 0;
+
+    while (x != 0)
+    {
+        x = x / 10;
+        y++;
+    }
+
+    for (z = 0; z < y - 1; z++)
+    {
+        printf("\b");
+    }
+}
+
+
 
 int main()
 {
@@ -249,6 +271,65 @@ int main()
         printf("%d", ct[num_proc - 1]);
         printf("\n");
         // 간트 차트 끝
+
+        printf("\n\n\n");
+
+         // Ready queue table    
+
+        printf("Ready queue table\n");
+        printf(" ------- ------------- ------------ \n");
+        printf("| Time  | Ready queue | Burst time |\n");
+        printf(" ------- ------------- ------------ \n");
+
+        for (a = 0; a <= ct[num_proc - 1]; a++)             // 마지막 프로세스가 실행 종료될때까지의 시간 a
+        {
+            c = 0;
+            d = 0;
+            for (i = 0; i < num_proc; i++)                  // 시간 a일때 대기중인 프로세스들을 출력하는 알고리즘
+            {
+                if (et[i] <= a && a < et[i] + bt[i])         // 시간 a 일때 실행중인 i번째 프로세스
+                {
+                    c = i + 1;
+                }
+                else if (a >= at[i] && a < et[i])        // 시간 a 일때 도착은 했지만 대기중이였던 프로세스들의 개수
+                {
+                    d++;
+                }
+            }
+
+            if (d == 0)                 // 대기중인 프로세스가 없을때
+            {
+                printf("|  %d    ", a);
+                backspace(a);
+                printf("|             |            |\n");
+                printf(" ------- ------------- ------------ \n");
+            }
+
+            if (d != 0)             // 대기중인 프로세스가 있을때
+            {
+                for (e = c; e < c + d; e++)
+                {
+                    if (e == c)
+                    {
+                        printf("|  %d    ", a);
+                        backspace(a);
+                    }
+                    else if (e != c)
+                    {
+                        printf("|       ");
+                    }
+                    printf("|     P%d      ", p[e]);
+                    backspace(p[e]);
+                    printf("|     %d      |\n", bt[e]);
+                    backspace(bt[e]);
+                }
+                printf(" ------- ------------- ------------ \n");
+            }
+        }
+        // Ready queue table 끝
+
+
+
 
         printf("\n\n");
         printf("What to do next?\n");
