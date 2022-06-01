@@ -26,15 +26,11 @@ typedef struct{
 	int twt;//total wait time
 	int trt;//total response time
 }DATA;
-//열린 파일로부터 데이터를 읽어 프로세스 배열을 채우는 함수
 int Process_load(FILE* fp,int* num_proc,int* tq, PROC** procs);
 
-//입력된 프로세스 배열을 복사
 PROC* Copy_processes(PROC* procs,int num_proc);
 
-//입력된 프로세스 배열로부터 스케쥴링 함수에 넣을 데이터 구조 배열 생성
 DATA* Make_dataIn(PROC* procArr,int num_proc,int tq);
-//데이터 구조배열 전체 제거(free)
 void Destroy_data(DATA* datas);
 
 //wait time, turnaround time 등 스케줄링 결과값을 표로 출력하는 함수

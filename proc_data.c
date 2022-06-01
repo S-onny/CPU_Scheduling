@@ -7,6 +7,7 @@
 int Process_load(FILE* fp, int* num_proc, int* tq, PROC** procs) {
 	PROC temp;
 	int ret;
+	char discard;
 	ret = fscanf(fp, "%d", num_proc);
 	if (ret == EOF)
 	{
@@ -15,7 +16,7 @@ int Process_load(FILE* fp, int* num_proc, int* tq, PROC** procs) {
 	}
 	printf("number of processes:%d\n",*num_proc);
 	*procs = (PROC*)realloc(*procs, sizeof(PROC)*(*num_proc));
-	char discard;
+	
 	for (int i = 0; i<(*num_proc); i++)
 	{
 		ret = fscanf(fp, " %c%d%d%d%d",&discard, &(temp.p), &(temp.at), &(temp.bt), &(temp.pri));
@@ -48,7 +49,7 @@ int Process_load(FILE* fp, int* num_proc, int* tq, PROC** procs) {
 
 PROC* Copy_processes(PROC* procs, int num_proc) {
 	PROC* temp = (PROC*)malloc(sizeof(PROC)*num_proc);
-	temp=(PROC*)memcpy(temp, procs, sizeof(PROC)*num_proc);
+	memcpy(temp, procs, sizeof(PROC)*num_proc);
 	return temp;
 }
 DATA* Make_dataIn(PROC* procArr, int num_proc,int tq) {
