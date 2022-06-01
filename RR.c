@@ -105,7 +105,7 @@ void RR(DATA* data)
 			(procs[queue_index].rem)--;//½ÇÇàÁßÀÎ ÇÁ·Î¼¼½ºÀÇ remain time °¨¼Ò
 			(g_bt[gantt_index])++;
 
-			if (at_index < num_proc && time + 1 >= procs[at_index].at) {	//µµÂøÇÑ ÇÁ·Î¼¼½º Çª½¬
+			if (at_index < num_proc && time + 1 >= procs[at_index].at) {	//??i¡Æ¨Ïi?©« ??e¢®©«?¢¬i???¢¬i¢¶?
 				push(&front, &rear, num_proc + 1, at_index, queue);
 				at_index++;
 
@@ -139,16 +139,25 @@ void RR(DATA* data)
 			else
 				index++;
 
-			time++;//½Ã°£ÀÌ Èå¸§
+			time++;//?©«e¡Æ????e|?
 
 		}
-		//ÇÁ·Î¼¼½Ì Á¾·á
+		//??e¢®©«?¢¬i??i¡Ë¡¦e¡Ì¨«
 
-	qsort(procs, num_proc, sizeof(PROC), compare_p);//procs¸¦ ´Ù½Ã pid¼øÀ¸·Î Á¤·Ä
-	(data->g_p)=g_p;
-	(data->g_et)=g_et;
-	(data->g_bt)=g_bt;
-	(data->gantt_index)=gantt_index;
-	free(queue);
+		qsort(procs, num_proc, sizeof(PROC), compare_p);//procse¡Í??¢´i?©« pid?©«?¨ùe? ????
+
+
+		(data->g_p) = g_p;
+		(data->g_et) = g_et;
+		(data->g_bt) = g_bt;
+		(data->gantt_index) = gantt_index;
+		free(queue);
+	
+
+		Print_table(data);
+
+		// e¡Æ???i¡Æ¡§i??e¡¤¢¬e|¡şe¢¬?
+		Print_gantt(data);
+		// e¡Æ???i¡Æ¡§i???
 
 }
