@@ -3,17 +3,19 @@
 #include <stdlib.h>
 #include "proc_data.h"
 #include "scheduling.h"
+#include <string.h>
 
+#define INT_MAX	2147483647//int의 최댓값 define
+#define swap(x, y, temp) ( (temp)=(x), (x)=(y), (y)=(temp) ) 	// 배열 요소의 순서를 바꾸기 위한 함수
 
-void RR(PROC* procs, int num_proc, int tq);
 
 int main(int argc, char **argv) {
 	FILE *fp;
-	int num_proc = 0;
+	int num_proc = 1;
 	int tq = 0;
 	if (argc != 2)
 	{
-		printf("no file input!", argv[0]);
+		printf("no file input!");
 		return 0;
 	}
 	if ((fp = fopen(argv[1], "rt")) == NULL)
@@ -21,30 +23,28 @@ int main(int argc, char **argv) {
 		fprintf( stderr, "error: opening file %s failed! \n", argv[1]);
 		return 0;
 	}
-	int num_proc = 1;
-	int tq = 0;
 	int ret;
 	PROC* procs = (PROC*)malloc(sizeof(PROC)*num_proc);//프로세스 구조체 배열
-	ret=Process_load(fp,&num_proc,&tq,procs);
+	ret=Process_load(fp,&num_proc,&tq,&procs);
 	if (!ret) return 0;
-	DATA* Datas=Make_dataIn(procs,num_proc);
+	DATA* Datas=Make_dataIn(procs,num_proc,tq);
 	
 	
 	//FCFS(&(Datas[0]));
 	//SJF(&(Datas[1]));
-	//srtf(&(Datas[2]));
-	//RR(&(Datas[3]));
+	//SRTF(&(Datas[2]));//TEST _ PASS 
+	//RR(&(Datas[3]));//TEST _ PASS
 	//np_priority(&(Datas[4]));
-	//pre_pri(&(Datas[5]));
+	//pre_pri(&(Datas[5]));//TEST _ PASS 
 	//np_pri_rr(&(Datas[6]));
-	
-	/*
 	for (int i=0; i<7;i++){
-		
-	Print_table(&(Datas[i]));
-	Print_gantt(&(Datas[i]));
+		//if(i==4||i==3) continue;
+		//Print_table(&(Datas[i]));
+		//Print_gantt(&(Datas[i]));
+		//Print_readyQueue(&(Datas[i]));
+		break;
 	}
-	*/
+	
 	
 
 	
@@ -184,10 +184,10 @@ int main(int argc, char **argv) {
 		if (s1 == '3')
 			break;
 		*/
-		
+		break;
 		
 	}
-	return 0;
 	free(procs);
-	Destroy_data(datas);
+	Destroy_data(Datas);
+	fclose(fp);
 }

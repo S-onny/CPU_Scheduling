@@ -24,6 +24,7 @@ void SRTF(DATA* data)
 	int* g_et=(int*)malloc(sizeof(int)*num_proc);//간트차트를 그리기 위한 동적배열들
 	int* g_bt=(int*)malloc(sizeof(int)*num_proc);//간트차트를 그리기 위한 동적배열들
 	int gantt_capacity=num_proc;
+	memset(g_bt,0,sizeof(int)*(gantt_capacity));
 	int min_rem=INT_MAX;//실행가능한 프로세스 중 가장 짧은 남은시간
 	int min_rem_index=-1;// 실행가능한 프로세스중 가장 remain time이 짧은 프로세스의 index
 
@@ -77,6 +78,7 @@ void SRTF(DATA* data)
 						g_p=(int*)realloc(g_p,sizeof(int)*gantt_capacity);
 						g_et=(int*)realloc(g_et,sizeof(int)*gantt_capacity);
 						g_bt=(int*)realloc(g_bt,sizeof(int)*gantt_capacity);
+						memset(&(g_bt[gantt_index+1]),0,sizeof(int)*(gantt_capacity-1-gantt_index));
 					}
 					gantt_index++;
 					g_p[gantt_index]=procs[min_rem_index].p;

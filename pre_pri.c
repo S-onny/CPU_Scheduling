@@ -24,7 +24,8 @@ void pre_pri(DATA* data)
 	int* g_et=(int*)malloc(sizeof(int)*num_proc);//간트차트를 그리기 위한 동적배열들
 	int* g_bt=(int*)malloc(sizeof(int)*num_proc);//간트차트를 그리기 위한 동적배열들
 	int gantt_capacity=num_proc;
-	printf("gantt arr");
+	
+	(int*)memset(g_bt,0,sizeof(int)*gantt_capacity);
 	int high_pri=0;//실행가능한 프로세스 중 가장 high priority 저장
 	int high_pri_index=-1;// 실행가능한 프로세스중 가장priority 높은 프로세스의 index
 
@@ -74,12 +75,13 @@ void pre_pri(DATA* data)
 			}
 			else{//첫번째로 실행되는 것이 아닌 프로세스의 경우
 				if (g_p[gantt_index] != procs[high_pri_index].p) {//이전time unit에서 실행된 프로세스와 다른 프로세스일 경우: 다음 index에 저장
-					printf("check_capacity");
 					if (gantt_capacity < gantt_index+2){//동적배열들의 할당크기가 부족할 경우 재할당
 						gantt_capacity *=2;
 						g_p=(int*)realloc(g_p,sizeof(int)*gantt_capacity);
 						g_et=(int*)realloc(g_et,sizeof(int)*gantt_capacity);
 						g_bt=(int*)realloc(g_bt,sizeof(int)*gantt_capacity);
+						
+						memset(&(g_bt[gantt_index+1]),0,sizeof(int)*(gantt_capacity-1-gantt_index));
 					}
 					gantt_index++;
 					g_p[gantt_index]=procs[high_pri_index].p;
