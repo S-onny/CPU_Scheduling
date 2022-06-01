@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "proc_data.h"
 
 int Process_load(FILE* fp, int* num_proc, int* tq, PROC** procs) {

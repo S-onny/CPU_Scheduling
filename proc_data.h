@@ -1,4 +1,4 @@
-
+#include <stdio.h>
 typedef struct {
 	int at;//arrival time
 	int bt;//burst time
@@ -26,7 +26,7 @@ typedef struct{
 	int trt;//total response time
 }DATA;
 //열린 파일로부터 데이터를 읽어 프로세스 배열을 채우는 함수
-int Process_load(FILE* fp,int* num_proc,int* tq, PROC* procs);
+int Process_load(FILE* fp,int* num_proc,int* tq, PROC** procs);
 
 //입력된 프로세스 배열을 복사
 PROC* Copy_processes(PROC* procs, int num_proc);

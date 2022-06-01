@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "proc_data.h"
-#include "scheduling.h"
 #include <string.h>
 
 #define INT_MAX	2147483647//intÀÇ ÃÖ´ñ°ª define
