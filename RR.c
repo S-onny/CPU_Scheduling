@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include "proc_data.h"
 
-int compare_a(const void* p1, const void* p2);
-int compare_p(const void* p1, const void* p2);
 void push(int* front, int* rear, int max, int value, int queue[]) {
 
 	*rear = (*rear + 1) % max;
@@ -18,48 +16,48 @@ int pop(int* front, int* rear, int max, int queue[]) {
 	return queue[*front];
 }
 
-void RR(PROC* procs,int num_proc ,int tq)
+void RR(DATA* data, int tq)
 {
-
-	int n, gantt_index, time;
+	int num_proc = data->num_proc;
+	PROC* procs = data->procs;
+	int gantt_index, time;
 	double ttat = 0, twt = 0;
-	// ijkn: ¹İº¹¹®À» À§ÇÑ º¯¼ö, gantt_index:°£Æ®Â÷Æ®¸¦ ±×¸®±â À§ÇÑ ¹è¿­µéÀÇ index
+	// ijkn: ë°˜ë³µë¬¸ì„ ìœ„í•œ ë³€ìˆ˜, gantt_index:ê°„íŠ¸ì°¨íŠ¸ë¥¼ ê·¸ë¦¬ê¸° ìœ„í•œ ë°°ì—´ë“¤ì˜ index
 	// num_proc = number of processes
 	// ttat = total turnaround time
 	// twt = total waiting time
-	// time: ÇÁ·Î¼¼½Ì ½Ã°¢
-	// E:¹«ÇÑ·çÇÁ Å»Ãâ
+	// time: í”„ë¡œì„¸ì‹± ì‹œê°
+	// E:ë¬´í•œë£¨í”„ íƒˆì¶œ
 	int front = -1;
 	int rear = -1;
-	int* queue = (int*)malloc((num_proc+1) * sizeof(int)); //´ë±âÅ¥
-	int* g_p = (int*)malloc( sizeof(int));//°£Æ®Â÷Æ®¸¦ ±×¸®±â À§ÇÑ µ¿Àû¹è¿­µé
-	int* g_et = (int*)malloc( sizeof(int));//°£Æ®Â÷Æ®¸¦ ±×¸®±â À§ÇÑ µ¿Àû¹è¿­µé
-	int* g_bt = (int*)malloc(sizeof(int));//°£Æ®Â÷Æ®¸¦ ±×¸®±â À§ÇÑ µ¿Àû¹è¿­µé
-	int index = 0;		//Pop¿©ºÎ¿¡ ´ëÇÑ ÀÎµ¦½º
-	int queue_index = -1;	//ÇöÀç CPUÁ¡À¯ÁßÀÎ ÇÁ·Î¼¼½º ÀÎµ¦½º
-	int at_index = 0;	//µµÂøÇÑ ÇÁ·Î¼¼½º ÀÎµ¦½º
+	int* queue = (int*)malloc((num_proc+1) * sizeof(int)); //ëŒ€ê¸°í
+	int* g_p = (int*)malloc( sizeof(int));//ê°„íŠ¸ì°¨íŠ¸ë¥¼ ê·¸ë¦¬ê¸° ìœ„í•œ ë™ì ë°°ì—´ë“¤
+	int* g_et = (int*)malloc( sizeof(int));//ê°„íŠ¸ì°¨íŠ¸ë¥¼ ê·¸ë¦¬ê¸° ìœ„í•œ ë™ì ë°°ì—´ë“¤
+	int* g_bt = (int*)malloc(sizeof(int));//ê°„íŠ¸ì°¨íŠ¸ë¥¼ ê·¸ë¦¬ê¸° ìœ„í•œ ë™ì ë°°ì—´ë“¤
+	int index = 0;		//Popì—¬ë¶€ì— ëŒ€í•œ ì¸ë±ìŠ¤
+	int queue_index = -1;	//í˜„ì¬ CPUì ìœ ì¤‘ì¸ í”„ë¡œì„¸ìŠ¤ ì¸ë±ìŠ¤
+	int at_index = 0;	//ë„ì°©í•œ í”„ë¡œì„¸ìŠ¤ ì¸ë±ìŠ¤
 
-	qsort(procs, num_proc, sizeof(PROC), compare_a); //µµÂø ¼ø¼­´ë·Î Á¤·Ä(°°À»½Ã ÇÁ·Î¼¼½º ¹øÈ£´ë·Î)
-
+	qsort(procs, num_proc, sizeof(PROC), compare_a); //ë„ì°© ìˆœì„œëŒ€ë¡œ ì •ë ¬(ê°™ì„ì‹œ í”„ë¡œì„¸ìŠ¤ ë²ˆí˜¸ëŒ€ë¡œ)
 
 		time = 0;
 		gantt_index = 0;
-		int N = num_proc;//N:½ÇÇàÀÌ ³¡³ªÁö ¾ÊÀº ÇÁ·Î¼¼½º ¼ö. ÀÔ·ÂµÈ ÇÁ·Î¼¼½º¼ö¸¦ º¹»çÇÏ¿© ÃÊ±âÈ­
+		int N = num_proc;//N:ì‹¤í–‰ì´ ëë‚˜ì§€ ì•Šì€ í”„ë¡œì„¸ìŠ¤ ìˆ˜. ì…ë ¥ëœ í”„ë¡œì„¸ìŠ¤ìˆ˜ë¥¼ ë³µì‚¬í•˜ì—¬ ì´ˆê¸°í™”
 
-		if (at_index < num_proc && 0 == procs[at_index].at) {	//Ã³À½ µµÂøÇÑ ÇÁ·Î¼¼½º Çª½¬
+		if (at_index < num_proc && 0 == procs[at_index].at) {	//ì²˜ìŒ ë„ì°©í•œ í”„ë¡œì„¸ìŠ¤ í‘¸ì‰¬
 			push(&front, &rear, num_proc + 1, at_index, queue);
 			at_index++;
 
 		}
 
-		while (N > 0) { //Á¾·áÁ¶°Ç: line136 
-
-			if (index == 0) {	//ÀÎµ¦½º°¡ 0ÀÌ¸é popÇÏ°í ÃÊ±âÈ­
+		while (N > 0) { //ì¢…ë£Œì¡°ê±´: line136 
+			
+			if (index == 0) {	//ì¸ë±ìŠ¤ê°€ 0ì´ë©´ popí•˜ê³  ì´ˆê¸°í™”
 			
 				queue_index = pop(&front, &rear, num_proc + 1, queue);
 				
-				if (queue_index == -1) {//ÇöÀç ½ÇÇà°¡´ÉÇÑ ÇÁ·Î¼¼½º ¾øÀ½(idle)
-										  /*//ÀÌºÎºĞÀº ´Ù¸¥ÇüÅÂÀÇ °£Æ®Â÷Æ®¸¦ ±×¸®±â À§ÇÑ ¿¹ºñ ÄÚµåÀÓ
+				if (queue_index == -1) {//í˜„ì¬ ì‹¤í–‰ê°€ëŠ¥í•œ í”„ë¡œì„¸ìŠ¤ ì—†ìŒ(idle)
+										  /*//ì´ë¶€ë¶„ì€ ë‹¤ë¥¸í˜•íƒœì˜ ê°„íŠ¸ì°¨íŠ¸ë¥¼ ê·¸ë¦¬ê¸° ìœ„í•œ ì˜ˆë¹„ ì½”ë“œì„
 										  if(gantt_index==0&&g_bt[j]==0){
 										  g_p[gantt_index]=0;
 										  g_et[gantt_index]=time;
@@ -77,10 +75,10 @@ void RR(PROC* procs,int num_proc ,int tq)
 										  }
 										  (g_bt[gantt_index])++;
 										  */
-					time++;//½Ã°£Èå¸§
+					time++;//ì‹œê°„íë¦„
 					continue;
 				}
-				if (procs[queue_index].p == g_p[gantt_index - 1]) {	//Àü ÇÁ·Î¼¼½º¶û Çö ÇÁ·Î¼¼½º µ¿ÀÏÇÏ¸é °£Æ®ÀÎµ¦½º À¯Áö
+				if (procs[queue_index].p == g_p[gantt_index - 1]) {	//ì „ í”„ë¡œì„¸ìŠ¤ë‘ í˜„ í”„ë¡œì„¸ìŠ¤ ë™ì¼í•˜ë©´ ê°„íŠ¸ì¸ë±ìŠ¤ ìœ ì§€
 					gantt_index--;
 				}
 				else {
@@ -95,27 +93,27 @@ void RR(PROC* procs,int num_proc ,int tq)
 				index = 0;
 			}
 
-			for (int i = 0; i < num_proc; i++) {	//½ÇÇàÀÌ ³¡³ªÁö ¾ÊÀº ÇÁ·Î¼¼½ºÁß ½ÇÇàµÇÁö ¾ÊÀº ÇÁ·Î¼¼½ºµéÀÇ ´ë±â½Ã°£ Áõ°¡
+			for (int i = 0; i < num_proc; i++) {	//ì‹¤í–‰ì´ ëë‚˜ì§€ ì•Šì€ í”„ë¡œì„¸ìŠ¤ì¤‘ ì‹¤í–‰ë˜ì§€ ì•Šì€ í”„ë¡œì„¸ìŠ¤ë“¤ì˜ ëŒ€ê¸°ì‹œê°„ ì¦ê°€
 				if (i != queue_index && procs[i].at <= time && (procs[i].c == -1))
 					(procs[i].wt)++;
 			}
-			(procs[queue_index].rem)--;//½ÇÇàÁßÀÎ ÇÁ·Î¼¼½ºÀÇ remain time °¨¼Ò
+			(procs[queue_index].rem)--;//ì‹¤í–‰ì¤‘ì¸ í”„ë¡œì„¸ìŠ¤ì˜ remain time ê°ì†Œ
 			(g_bt[gantt_index])++;
 
-			if (at_index < num_proc && time + 1 == procs[at_index].at) {	//µµÂøÇÑ ÇÁ·Î¼¼½º Çª½¬
+			if (at_index < num_proc && time + 1 == procs[at_index].at) {	//ë„ì°©í•œ í”„ë¡œì„¸ìŠ¤ í‘¸ì‰¬
 				push(&front, &rear, num_proc + 1, at_index, queue);
 				at_index++;
 
 			}
 
-			if (procs[queue_index].et == -1) procs[queue_index].et = time;//ÇÁ·Î¼¼½º°¡ ÃÖÃÊ·Î ½ÇÇàµÈ ½Ã°£À» et¿¡ ÀúÀå
-			if (procs[queue_index].rem == 0)	//½ÇÇà¿Ï·áµÇ¾î ÇÁ·Î¼¼½º ¹Ù²ãÁÖ±â
+			if (procs[queue_index].et == -1) procs[queue_index].et = time;//í”„ë¡œì„¸ìŠ¤ê°€ ìµœì´ˆë¡œ ì‹¤í–‰ëœ ì‹œê°„ì„ etì— ì €ì¥
+			if (procs[queue_index].rem == 0)	//ì‹¤í–‰ì™„ë£Œë˜ì–´ í”„ë¡œì„¸ìŠ¤ ë°”ê¿”ì£¼ê¸°
 			{
 				procs[queue_index].ct = time + 1;
 				procs[queue_index].tat = procs[queue_index].ct - procs[queue_index].at;
 				procs[queue_index].c = 0;
-				N = N - 1;//½ÇÇà°¡´ÉÇÑ ÇÁ·Î¼¼½º ¼ö °¨¼Ò
-				if (N == 0) {//¸ğµç ÇÁ·Î¼¼½º°¡ ½ÇÇàÁ¾·áµÈ °æ¿ì ¹İº¹¹® Å»Ãâ
+				N = N - 1;//ì‹¤í–‰ê°€ëŠ¥í•œ í”„ë¡œì„¸ìŠ¤ ìˆ˜ ê°ì†Œ
+				if (N == 0) {//ëª¨ë“  í”„ë¡œì„¸ìŠ¤ê°€ ì‹¤í–‰ì¢…ë£Œëœ ê²½ìš° ë°˜ë³µë¬¸ íƒˆì¶œ
 					time++;
 					break;
 				}
@@ -124,7 +122,7 @@ void RR(PROC* procs,int num_proc ,int tq)
 
 
 			}
-			else if (tq == index + 1)	//time-quantom¿¡ ÀÇÇØ ÇÁ·Î¼¼½º ¹Ù²ãÁÖ±â
+			else if (tq == index + 1)	//time-quantomì— ì˜í•´ í”„ë¡œì„¸ìŠ¤ ë°”ê¿”ì£¼ê¸°
 			{
 
 				push(&front, &rear, num_proc + 1, queue_index, queue);
@@ -136,171 +134,27 @@ void RR(PROC* procs,int num_proc ,int tq)
 			else
 				index++;
 
-			time++;//½Ã°£ÀÌ Èå¸§
+			time++;//ì‹œê°„ì´ íë¦„
 
 		}
-		//ÇÁ·Î¼¼½Ì Á¾·á
+		//í”„ë¡œì„¸ì‹± ì¢…ë£Œ
 
-		qsort(procs, num_proc, sizeof(PROC), compare_p);//procs¸¦ ´Ù½Ã pid¼øÀ¸·Î Á¤·Ä
-
-		for (int i = 0; i < num_proc; i++) {//twt ttat °è»ê
-			twt += procs[i].wt;
-			ttat += procs[i].tat;
-		}
-
-		//print table
-		printf("-------------------------------------------------------------------\n");
-		printf(" Processes\tArrival\tBurst\tCompletion\tWaiting\tTurnaround\n");
-		printf("-------------------------------------------------------------------\n");
-		for (int i = 0; i < num_proc; i++)
-		{
-			printf(" Process[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\n", procs[i].p, procs[i].at, procs[i].bt, procs[i].ct, procs[i].wt, procs[i].tat);
-
-		}
-		printf("-------------------------------------------------------------------\n");
-		printf("Average waiting time : %.2f\n", twt / num_proc);
-		printf("Average turnaround time : %.2f\n", ttat / num_proc);
+		qsort(procs, num_proc, sizeof(PROC), compare_p);//procsë¥¼ ë‹¤ì‹œ pidìˆœìœ¼ë¡œ ì •ë ¬
 
 
-		// °£Æ® Â÷Æ® ±×¸®±â
-		printf("\n\n");
-		printf("Gantt Chart %d %d", gantt_index, g_p[gantt_index]);
-		printf("\n");
+		(data->g_p) = g_p;
+		(data->g_et) = g_et;
+		(data->g_bt) = g_bt;
+		(data->gantt_index) = gantt_index;
+	
 
-		for (int i = 1; i <= gantt_index + 1; i++) // À­ÁÙ
-		{
-			printf(" ----");
-			n = i - 1;
-			for (int j = 0; j < g_bt[n]; j++)
-			{
-				printf("-");
-			}
+		Print_table(data);
 
-
-
-			if (i != gantt_index + 1 && g_et[i] > g_et[n] + g_bt[n])          // ÇÁ·Î¼¼½º »çÀÌ¿¡ ºó ½Ã°£ÀÌ ÀÖÀ»°æ¿ì¿¡ Ãâ·ÂµÇ´Â °£Æ®Â÷Æ®ÀÇ ºó °ø°£ÀÇ À­ÁÙ "-" 
-			{
-
-				printf(" -");
-				for (int k = 0; k < g_et[i] - (g_et[n] + g_bt[n]); k++)
-				{
-					printf("-");
-				}
-			}
-		}
-
-
-
-
-
-		printf("\n");
-
-		for (int i = 1; i <= gantt_index + 1; i++) // °¡¿îµ¥ ÁÙ
-		{
-			n = i - 1;
-
-			printf("| P%d ", g_p[n]);
-
-			for (int j = 0; j < g_bt[n]; j++)
-			{
-				printf(" ");
-			}
-
-
-			if (i != gantt_index + 1 && g_et[i] > g_et[n] + g_bt[n])          // ÇÁ·Î¼¼½º »çÀÌ¿¡ ºó ½Ã°£ÀÌ ÀÖÀ»°æ¿ì¿¡ Ãâ·ÂµÇ´Â °£Æ®Â÷Æ®ÀÇ ºó °ø°£ÀÇ °¡¿îµ¥ ÁÙÀÇ °ø¹é
-			{
-				printf("| ");
-				for (int k = 0; k < (g_et[i] - (g_et[n] + g_bt[n])); k++)
-				{
-					printf(" ");
-				}
-			}
-		}
-
-
-
-		printf("|");
-		printf("\n");
-
-		for (int i = 1; i <= gantt_index + 1; i++) // ¾Æ·§ÁÙ
-		{
-			printf(" ----");
-
-			for (int j = 0; j < g_bt[i - 1]; j++)
-			{
-				printf("-");
-			}
-
-			n = i - 1;
-			if (i != gantt_index + 1 && g_et[i] > g_et[n] + g_bt[n])          // ÇÁ·Î¼¼½º »çÀÌ¿¡ ºó ½Ã°£ÀÌ ÀÖÀ»°æ¿ì¿¡ Ãâ·ÂµÇ´Â °£Æ®Â÷Æ®ÀÇ ºó °ø°£ÀÇ ¾Æ·§ÁÙ "-"
-			{
-				printf(" -");
-				for (int k = 0; k < (g_et[i] - (g_et[n] + g_bt[n])); k++)
-				{
-					printf("-");
-				}
-			}
-		}
-
-
-		printf("\n");
-
-		int a, b, c, d, e, f;
-		for (int i = 1; i <= gantt_index + 1; i++) // ¾Æ·§ÁÙ ¹Ø ½ÇÇà½Ã°£
-		{
-			printf("%d    ", g_et[i - 1]);
-			for (int j = 0; j < g_bt[i - 1]; j++)
-			{
-				printf(" ");
-			}
-
-			a = g_et[i - 1];                                  // ÀÚ¸´¼ö¸¸Å­ °ø¹é »©±â
-			b = 0;
-			while (a != 0)
-			{
-				a = a / 10;
-				++b;
-			}
-
-			for (c = 0; c < b - 1; c++)
-			{
-				printf("\b");
-			}
-
-			n = i - 1;                              // ÇÁ·Î¼¼½º »çÀÌ¿¡ ºó ½Ã°£ÀÌ ÀÖÀ»°æ¿ì¿¡ Ãâ·ÂµÇ´Â °£Æ®Â÷Æ®ÀÇ ºó °ø°£ ¹ØÀÇ ½ÇÇà½Ã°£ »çÀÌÀÇ °ø¹é
-			if (i != gantt_index + 1 && g_et[i] > g_et[n] + g_bt[n])
-			{
-				printf("%d ", g_et[n] + g_bt[n]);
-				for (int k = 0; k < (g_et[i] - (g_et[n] + g_bt[n])); k++)
-				{
-					printf(" ");
-				}
-
-				d = g_et[n] + g_bt[n];                              // ÀÚ¸´¼ö¸¸Å­ °ø¹é »©±â
-				e = 0;
-				while (d != 0)
-				{
-					d = d / 10;
-					++e;
-				}
-
-				for (f = 0; f < e - 1; f++)
-				{
-					printf("\b");
-				}
-
-			}
-
-		}
-
-
-		printf("%d", g_et[gantt_index] + g_bt[gantt_index]);
-		printf("\n");
-		// °£Æ® Â÷Æ® ³¡
+		// ê°„íŠ¸ ì°¨íŠ¸ ê·¸ë¦¬ê¸°
+		Print_gantt(data);
+		// ê°„íŠ¸ ì°¨íŠ¸ ë
 		
-	free(g_p);
-	free(g_et);
-	free(g_bt);
-	free(queue);
 
+	free(queue);
+	return;
 }
