@@ -3,7 +3,16 @@
 #include <stdlib.h>
 #include "proc_data.h"
 
-void RR(PROC* procs, int num_proc, int tq);
+void RR(PROC* procs, int num_#define _CRT_SECURE_NO_WARNINGS 
+#include <stdio.h>
+#include <stdlib.h>
+#include "proc_data.h"
+
+void RR(DATA* procs, int tq);
+void pre_pri(DATA* data);
+void SRTF(DATA* data);
+//Î≥∏Ïù∏Ìï®Ïàò ÎÑ£Ïñ¥Ï£ºÏÑ∏Ïöî
+
 
 int main(void) {
 	
@@ -11,7 +20,8 @@ int main(void) {
 		char s1 = 0;
 		int num_proc = 0;
 		int tq = 0;
-		PROC* procs = (PROC*)malloc(sizeof(PROC));//«¡∑ŒººΩ∫ ±∏¡∂√º πËø≠
+		int check[7] = { 0, };
+		PROC* procs = (PROC*)malloc(sizeof(PROC));//ÌîÑÎ°úÏÑ∏Ïä§ Íµ¨Ï°∞Ï≤¥ Î∞∞Ïó¥
 
 
 
@@ -21,7 +31,7 @@ int main(void) {
 		procs = (PROC*)realloc(procs, sizeof(PROC) * num_proc);
 		printf("Enter the processes\n");
 		printf("Processes\tArrival Time\tBurst time\tPriority\n");
-		for (int i = 0; i < num_proc; i++) // at, bt ¿‘∑¬πﬁ∞Ì, «¡∑ŒººΩ∫±∏¡∂√º πËø≠ø° pidøÕ «‘≤≤ ¿˙¿Â
+		for (int i = 0; i < num_proc; i++) // at, bt ÏûÖÎ†•Î∞õÍ≥†, ÌîÑÎ°úÏÑ∏Ïä§Íµ¨Ï°∞Ï≤¥ Î∞∞Ïó¥Ïóê pidÏôÄ Ìï®Íªò Ï†ÄÏû•
 		{
 			printf("Process[%d]:\t\t", i + 1);
 			scanf("%d %d %d", &(procs[i].at), &(procs[i].bt), &(procs[i].pri));
@@ -30,20 +40,22 @@ int main(void) {
 		printf("Enter the Time-Quantom: ");
 		scanf("%d", &tq);
 		for (int i = 0; i < num_proc; i++) {
-			procs[i].rem = procs[i].bt;//≥≤¿∫Ω√∞£ burst time¿∏∑Œ √ ±‚»≠
-			procs[i].wt = 0;//±‚≈∏ « ø‰«— ºˆƒ°µÈ √ ±‚»≠
-			procs[i].et = 0 - 1;//√÷√  Ω««‡Ω√∞£ ±∏∫–¿ª ¿ß«ÿ -1∑Œ √ ±‚»≠
+			procs[i].rem = procs[i].bt;//ÎÇ®ÏùÄÏãúÍ∞Ñ burst timeÏúºÎ°ú Ï¥àÍ∏∞Ìôî
+			procs[i].wt = 0;//Í∏∞ÌÉÄ ÌïÑÏöîÌïú ÏàòÏπòÎì§ Ï¥àÍ∏∞Ìôî
+			procs[i].et = 0 - 1;//ÏµúÏ¥à Ïã§ÌñâÏãúÍ∞Ñ Íµ¨Î∂ÑÏùÑ ÏúÑÌï¥ -1Î°ú Ï¥àÍ∏∞Ìôî
 			procs[i].ct = 0;
 			procs[i].tat = 0;
 			procs[i].c = -1;
 		}
+
+		DATA* Datas = Make_dataIn(procs, num_proc);
+
+		
+
 		while (1) {
 			char s = 0;
 			s1 = 0;
-			PROC* cpy_procs = (PROC*)malloc(sizeof(PROC) * num_proc);
-			for (int i = 0; i < num_proc; i++) {
-				cpy_procs[i] = procs[i];
-			}
+
 			printf("\n\nChoose the algorithm\n");
 			printf("1.FCFS\n");
 			printf("2.SJF\n");
@@ -57,29 +69,85 @@ int main(void) {
 			}
 			if (s == '1') {
 				printf("FCFS Selected!\n");
+
+				if (check[s - '1'] == 0) {
+										check[s - '1'] = 1;
+										//Î≥∏Ïù∏Ìï®Ïàò ÎÑ£Ïñ¥Ï£ºÏÑ∏Ïöî
+				}
+				else {
+					Print_table(&Datas[s - '1']);
+					Print_gantt(&Datas[s - '1']);
+				}
 			}
 			else if (s == '2') {
 				printf("SJF Selected!\n");
+				if (check[s - '1'] == 0) {
+					//Î≥∏Ïù∏Ìï®Ïàò ÎÑ£Ïñ¥Ï£ºÏÑ∏Ïöî
+					check[s - '1'] = 1;
+				}
+				else {
+					Print_table(&Datas[s - '1']);
+					Print_gantt(&Datas[s - '1']);
+				}
 			}
 			else if (s == '3') {
 				printf("SRTF Selected!\n");
+				if (check[s - '1'] == 0) {
+					SRTF(&Datas[2]);
+					check[s - '1'] = 1;
+				}
+				else {
+					Print_table(&Datas[s - '1']);
+					Print_gantt(&Datas[s - '1']);
+				}
 			}
 			else if (s == '4') {
 				printf("RR Selected!\n");
-				RR(cpy_procs, num_proc, tq);
+				if (check[s - '1'] == 0) {
+					RR(&Datas[3], tq);
+					check[s - '1'] = 1;
+				}
+				else
+				{
+					Print_table(&Datas[s - '1']);
+					Print_gantt(&Datas[s - '1']);
+				}
 			}
 			else if (s == '5') {
 				printf("NON-Preemptive Priority Selected!\n");
-				np_priority(cpy_procs, num_proc);
+				if (check[s - '1'] == 0) {
+					np_priority(&Datas[4]);
+					check[s - '1'] = 1;
+				}
+				else {
+					Print_table(&Datas[s - '1']);
+					Print_gantt(&Datas[s - '1']);
+				}
 			}
 			else if (s == '6') {
-				printf("Preemptive Selected!\n");
+				printf("Preemptive Priority Selected!\n");
+				if (check[s - '1'] == 0) {
+					//Î≥∏Ïù∏Ìï®Ïàò ÎÑ£Ïñ¥Ï£ºÏÑ∏Ïöî
+					check[s - '1'] = 1;
+				}
+				else {
+					Print_table(&Datas[s - '1']);
+					Print_gantt(&Datas[s - '1']);
+				}
 			}
 			else if (s == '7') {
 				printf("Non-Preemptive Priority with RR Selected!\n");
+				if (check[s - '1'] == 0) {
+					//Î≥∏Ïù∏Ìï®Ïàò ÎÑ£Ïñ¥Ï£ºÏÑ∏Ïöî
+					check[s - '1'] = 1;
+				}
+				else {
+					Print_table(&Datas[s - '1']);
+					Print_gantt(&Datas[s - '1']);
+				}
 			}
 
-			free(cpy_procs);
+
 
 			printf("1.Try with different algorithm\n");
 			printf("2.Try with new process\n");
@@ -99,9 +167,13 @@ int main(void) {
 			}
 			
 		}
+		printf("ÌååÍ¥¥");
+		Destroy_data(Datas);
+		printf("ÌååÍ¥¥ÏôÑÎ£å");
 		free(procs);
 		if (s1 == '3')
 			break;
 	}
 	return 0;
 }
+
