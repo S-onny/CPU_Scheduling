@@ -1,9 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS 
-#include <stdio.h>
-#include <stdlib.h>
-#include "proc_data.h"
 
-void RR(PROC* procs, int num_#define _CRT_SECURE_NO_WARNINGS 
 #include <stdio.h>
 #include <stdlib.h>
 #include "proc_data.h"
