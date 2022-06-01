@@ -9,7 +9,7 @@ typedef struct {
 	int wt;//wait time
 	int pri;//priority
 	int rem;//remain burst time
-	int c;//¿Ï·áÇßÀ¸¸é 0 ¾Æ´Ï¸é -1
+	int c;//ì™„ë£Œí–ˆìœ¼ë©´ 0 ì•„ë‹ˆë©´ -1
 }PROC;
 typedef struct{
 	PROC* procs;
@@ -24,23 +24,23 @@ typedef struct{
 	int twt;//total wait time
 	int trt;//total response time
 }DATA;
-//¿­¸° ÆÄÀÏ·ÎºÎÅÍ µ¥ÀÌÅÍ¸¦ ÀĞ¾î ÇÁ·Î¼¼½º ¹è¿­À» Ã¤¿ì´Â ÇÔ¼ö
+//ì—´ë¦° íŒŒì¼ë¡œë¶€í„° ë°ì´í„°ë¥¼ ì½ì–´ í”„ë¡œì„¸ìŠ¤ ë°°ì—´ì„ ì±„ìš°ëŠ” í•¨ìˆ˜
 int Process_load(FILE* fp,int* num_proc,int* tq, PROC* procs);
 
-//ÀÔ·ÂµÈ ÇÁ·Î¼¼½º ¹è¿­À» º¹»ç
-PROC* Copy_processes(PROC* procs);
+//ì…ë ¥ëœ í”„ë¡œì„¸ìŠ¤ ë°°ì—´ì„ ë³µì‚¬
+PROC* Copy_processes(PROC* procs, int num_proc);
 
-//ÀÔ·ÂµÈ ÇÁ·Î¼¼½º ¹è¿­·ÎºÎÅÍ ½ºÄÉÁì¸µ ÇÔ¼ö¿¡ ³ÖÀ» µ¥ÀÌÅÍ ±¸Á¶ ¹è¿­ »ı¼º
+//ì…ë ¥ëœ í”„ë¡œì„¸ìŠ¤ ë°°ì—´ë¡œë¶€í„° ìŠ¤ì¼€ì¥´ë§ í•¨ìˆ˜ì— ë„£ì„ ë°ì´í„° êµ¬ì¡° ë°°ì—´ ìƒì„±
 DATA* Make_dataIn(PROC* procArr,int num_proc);
-//µ¥ÀÌÅÍ ±¸Á¶¹è¿­ ÀüÃ¼ Á¦°Å(free)
+//ë°ì´í„° êµ¬ì¡°ë°°ì—´ ì „ì²´ ì œê±°(free)
 void Destroy_data(DATA* datas);
 
-//wait time, turnaround time µî ½ºÄÉÁÙ¸µ °á°ú°ªÀ» Ç¥·Î Ãâ·ÂÇÏ´Â ÇÔ¼ö
-//twt, ttat, trt¸¦ °è»êÇÏ´Â ±â´É Æ÷ÇÔ
+//wait time, turnaround time ë“± ìŠ¤ì¼€ì¤„ë§ ê²°ê³¼ê°’ì„ í‘œë¡œ ì¶œë ¥í•˜ëŠ” í•¨ìˆ˜
+//twt, ttat, trtë¥¼ ê³„ì‚°í•˜ëŠ” ê¸°ëŠ¥ í¬í•¨
 void Print_table(DATA* datum);
-//Gantt chart¸¦ ±×¸®´Â ÇÔ¼ö
+//Gantt chartë¥¼ ê·¸ë¦¬ëŠ” í•¨ìˆ˜
 void Print_gantt(DATA* datum);
 
 
-int compare_a(const void* p1, const void* p2);//arrival ¼ø¼­ Äü Á¤·ÄÀ» À§ÇÑ compare ÇÔ¼ö
-int compare_p(const void* p1, const void* p2);//pid¼øÀ¸·Î Á¤·ÄÇÏ±âÀ§ÇÑ compare ÇÔ¼ö
+int compare_a(const void* p1, const void* p2);//arrival ìˆœì„œ í€µ ì •ë ¬ì„ ìœ„í•œ compare í•¨ìˆ˜
+int compare_p(const void* p1, const void* p2);//pidìˆœìœ¼ë¡œ ì •ë ¬í•˜ê¸°ìœ„í•œ compare í•¨ìˆ˜
