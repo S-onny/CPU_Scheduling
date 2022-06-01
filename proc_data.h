@@ -14,6 +14,7 @@ typedef struct {
 typedef struct{
 	PROC* procs;
 	int num_proc;//number of processes
+	int tq;//time quantum
 	//for gantt chart&readyQueue sim
 	int* g_p;
 	int* g_et;
@@ -31,7 +32,7 @@ int Process_load(FILE* fp,int* num_proc,int* tq, PROC* procs);
 PROC* Copy_processes(PROC* procs, int num_proc);
 
 //입력된 프로세스 배열로부터 스케쥴링 함수에 넣을 데이터 구조 배열 생성
-DATA* Make_dataIn(PROC* procArr,int num_proc);
+DATA* Make_dataIn(PROC* procArr,int num_proc,int tq);
 //데이터 구조배열 전체 제거(free)
 void Destroy_data(DATA* datas);
 
