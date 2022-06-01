@@ -1,9 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "proc_data.h"
 
-int Process_load(FILE* fp, int* num_proc, int* tq, PROC* procs) {
+int Process_load(FILE* fp, int* num_proc, int* tq, PROC** procs) {
 	PROC temp;
 	int ret;
 	ret = fscanf(fp, "%d", num_proc);
@@ -12,46 +13,50 @@ int Process_load(FILE* fp, int* num_proc, int* tq, PROC* procs) {
 		printf("FILE error:invaild format or empty!");
 		return 0;
 	}
-
-	procs = (PROC*)realloc(procs, sizeof(PROC)*(*num_proc));
+	printf("number of processes:%d\n",*num_proc);
+	*procs = (PROC*)realloc(*procs, sizeof(PROC)*(*num_proc));
+	char discard;
 	for (int i = 0; i<(*num_proc); i++)
 	{
-		ret = fscanf(fp, "P%d %d %d %d", &(temp.p), &(temp.at), &(temp.bt), &(temp.pri));
+		ret = fscanf(fp, " %c%d%d%d%d",&discard, &(temp.p), &(temp.at), &(temp.bt), &(temp.pri));
 		if (ret == EOF)
 		{
 			printf("FILE error:not enough processes or invaild format");
 			return 0;
 		}
-		printf("reading process P%d...", temp.p);
-		procs[i] = temp;
-		procs[i].rem = procs[i].bt;//남은시간 burst time으로 초기화
-		procs[i].wt = 0;//기타 필요한 수치들 초기화
-		procs[i].et = 0 - 1;//최초 실행시간 구분을 위해 -1로 초기화
-		procs[i].ct = 0;
-		procs[i].tat = 0;
-		procs[i].c = -1;
+		printf("reading process P%d...\n", temp.p);
+		printf(" %d %d %d\n", temp.at, temp.bt, temp.pri);
+		(*procs)[i] = temp;
+		(*procs)[i].rem = (*procs)[i].bt;//남은시간 burst time으로 초기화
+		(*procs)[i].wt = 0;//기타 필요한 수치들 초기화
+		(*procs)[i].et = 0 - 1;//최초 실행시간 구분을 위해 -1로 초기화
+		(*procs)[i].ct = 0;
+		(*procs)[i].tat = 0;
+		(*procs)[i].c = -1;
 	}
-	ret = fscanf(fp, "%d", tq);
+	ret = fscanf(fp, "%d\n", tq);
 	if (ret == EOF)
 	{
 		printf("FILE error:No Time quantum!");
 		return 0;
 	}
+	printf("tq:%d",*tq);
 	return 1;
 
 
 }
 
-PROC* Copy_processes(PROC* procs) {
-	PROC* temp = (PROC*)malloc(sizeof(procs));
-	memcpy(temp, procs, sizeof(procs));
+PROC* Copy_processes(PROC* procs, int num_proc) {
+	PROC* temp = (PROC*)malloc(sizeof(PROC)*num_proc);
+	temp=(PROC*)memcpy(temp, procs, sizeof(PROC)*num_proc);
 	return temp;
 }
-DATA* Make_dataIn(PROC* procArr, int num_proc) {
+DATA* Make_dataIn(PROC* procArr, int num_proc,int tq) {
 	DATA* DataArr = (DATA*)malloc(sizeof(DATA) * 7);
 	for (int i = 0; i<7; i++) {
 		DataArr[i].num_proc = num_proc;
-		DataArr[i].procs = Copy_processes(procArr);
+		DataArr[i].tq = tq;
+		DataArr[i].procs = Copy_processes(procArr, num_proc);
 		DataArr[i].g_p = NULL;
 		DataArr[i].g_et = NULL;
 		DataArr[i].g_bt = NULL;
@@ -69,8 +74,9 @@ void Destroy_data(DATA* datas) {
 			free(datas[i].g_et);
 			free(datas[i].g_bt);
 		}
-		free(datas);
+		
 	}
+	free(datas);
 }
 void Print_table(DATA* datum) {
 	int np = datum->num_proc;
@@ -89,8 +95,8 @@ void Print_table(DATA* datum) {
 
 	}
 	printf("-------------------------------------------------------------------\n");
-	printf("Average waiting time : %.2f\n", datum->twt / np);
-	printf("Average turnaround time : %.2f\n", datum->ttat / np);
+	printf("Average waiting time : %.2f\n", datum->twt / (float)np);
+	printf("Average turnaround time : %.2f\n", datum->ttat / (float)np);
 }
 void Print_gantt(DATA* datum) {
 
@@ -230,6 +236,95 @@ void Print_gantt(DATA* datum) {
 
 	printf("%d", datum->g_et[gt] + datum->g_bt[gt]);
 	printf("\n");
+}
+void backspace(int a)        // 두자릿수 이상의 숫자가 출력될 경우 backspace를 출력하는 함수
+{
+    int x, y, z;
+    x = a;
+    y = 0;
+
+    while (x != 0)
+    {
+        x = x / 10;
+        y++;
+    }
+
+    for (z = 0; z < y - 1; z++)
+    {
+        printf("\b");
+    }
+}
+
+
+void Print_readyQueue(DATA* datum){
+	         // Ready queue table    
+
+        printf("Ready queue table\n");
+		
+        printf(" ------- ------------- ------------ \n");
+        printf("| Time  | Ready queue | Remaintime |\n");
+        printf(" ------- ------------- ------------ \n");
+		int i,j,a,c,d,e;
+		int gi=datum->gantt_index;
+		int* p=datum->g_p;
+		int* et=datum->g_et;
+		int* bt=datum->g_bt;
+		int ct[(datum->gantt_index)+1];
+		int pat[datum->num_proc];
+		int pct[datum->num_proc];
+		int pp[datum->num_proc];
+		int prem[datum->num_proc];
+		for (i=0;i<=(gi);i++){
+			ct[i]=bt[i]+et[i];
+		}
+		for (i=0;i<datum->num_proc;i++){
+			pat[i]=(datum->procs)[i].at;
+			pct[i]=(datum->procs)[i].ct;
+			pp[i]=(datum->procs)[i].p;
+			prem[i]=(datum->procs)[i].bt;
+		}
+
+        for (a = 0; a <= ct[gi]; a++)             // 마지막 프로세스가 실행 종료될때까지의 시간 a
+        {
+            c = -1, e=-1;
+            d = 0;
+			for(j=0;j<=gi;j++){// 시간 a 일때 실행중인프로세스 pid찾기
+					if (et[j] <= a && a <= ct[j]){
+						c=p[j];
+						e=j;
+					}
+				}
+			printf("|  %d    ", a);
+			backspace(a);
+            for (i = 0; i < (datum->num_proc); i++)                  // 시간 a일때 대기중인 프로세스들을 출력하는 알고리즘
+            {
+				if(pp[i] == c) {
+					prem[i] --;
+					continue;
+				}
+                if (a >= pat[i] && a < pct[i])       // 시간 a 일때 도착+ 종료안됨+대기중이였던 프로세스들의 개수
+                {
+                    d++;
+					if (d>1){
+						printf("|       ");
+					}
+					printf("|     P%d      ", pp[i]);
+                    backspace(p[e]);
+					
+                    printf("|     %d      ", prem[i]);
+                    backspace(prem[i]);
+                    printf("|\n");
+                }
+				
+            }
+
+            if (d == 0)                 // 대기중인 프로세스가 없을때
+            {
+                printf("|             |            |\n");
+			}
+			printf(" ------- ------------- ------------ \n");
+        }
+        // Ready queue table 끝
 }
 
 int compare_a(const void* p1, const void* p2) {//arrival 순서 퀵 정렬을 위한 compare 함수
