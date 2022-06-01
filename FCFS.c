@@ -298,8 +298,9 @@ int main()
                     }
                     printf("|     P%d      ", p[e]);
                     backspace(p[e]);
-                    printf("|     %d      |\n", bt[e]);
+                    printf("|     %d      ", bt[e]);
                     backspace(bt[e]);
+                    printf("|\n");
                 }
                 printf(" ------- ------------- ------------ \n");
             }
