@@ -116,11 +116,11 @@ void SRTF(DATA* data)
 	(data->g_et) = g_et;
 	(data->g_bt) = g_bt;
 	(data->gantt_index) = gantt_index;
-
+	Print_gantt(data);
 	Print_table(data);
 
 	// 간트 차트 그리기
-	Print_gantt(data);
+	
 	// 간트 차트 끝
 
 	printf("\n\n\n");
