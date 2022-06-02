@@ -27,7 +27,7 @@ typedef struct{
 	int trt;//total response time
 }DATA;
 //열린 파일로부터 데이터를 읽어 프로세스 배열을 채우는 함수
- Process_load(FILE* fp,int* num_proc,int* tq);
+PROC* Process_load(FILE* fp,int* num_proc,int* tq);
 
 //입력된 프로세스 배열을 복사
 PROC* Copy_processes(PROC* procs, int num_proc);
