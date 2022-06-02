@@ -30,14 +30,15 @@ void Print_readyQueue(DATA* datum){
         printf(" ------- ------------- ------------ \n");
 		int i,j,a,c,d,e;
 		int gi=datum->gantt_index;
+		int num_proc = datum->num_proc;
 		int* p=datum->g_p;
 		int* et=datum->g_et;
 		int* bt=datum->g_bt;
-		int ct[(datum->gantt_index)+1];
-		int pat[datum->num_proc];
-		int pct[datum->num_proc];
-		int pp[datum->num_proc];
-		int prem[datum->num_proc];
+	int *ct= (int*)malloc(sizeof(int) * (gi+1));
+	int *pat= (int*)malloc(sizeof(int) * num_proc);
+	int *pct= (int*)malloc(sizeof(int) * num_proc);
+	int *pp= (int*)malloc(sizeof(int) * num_proc); 
+	int *prem= (int*)malloc(sizeof(int) * num_proc);
 		for (i=0;i<=(gi);i++){
 			ct[i]=bt[i]+et[i];
 		}
@@ -89,4 +90,9 @@ void Print_readyQueue(DATA* datum){
 			printf(" ------- ------------- ------------ \n");
         }
         // Ready queue table 끝
+	free(ct);
+	free(pat);
+	free(pct);
+	free(pp);
+	free(prem);
 }
