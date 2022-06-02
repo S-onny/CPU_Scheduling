@@ -79,10 +79,14 @@ void RR(DATA* data)
 										  */
 					
 					
-					if (at_index < num_proc && time + 1 >= procs[at_index].at) {	//도착한 프로세스 푸쉬
-						push(&front, &rear, num_proc + 1, at_index, queue);
-						at_index++;
+					if (at_index < num_proc) {
+					for (int i = at_index; i < num_proc; i++) {
+						if ( time + 1 == procs[i].at) {	//도착한 프로세스 푸쉬
+							push(&front, &rear, num_proc + 1, i, queue);
+							at_index++;
+						}
 					}
+				}
 					time++;//?œê°„?ë¦„
 					continue;
 				}
@@ -108,11 +112,14 @@ void RR(DATA* data)
 			(procs[queue_index].rem)--;//?¤í–‰ì¤‘???„ë¡œ?¸ìŠ¤ì˜ remain time ê°?Œ
 			(g_bt[gantt_index])++;
 
-			if (at_index < num_proc && time + 1 >= procs[at_index].at) {	//?„ì°©í•œ ?„ë¡œ?¸ìŠ??¸ì‰?
-				push(&front, &rear, num_proc + 1, at_index, queue);
-				at_index++;
-
-			}
+			if (at_index < num_proc) {
+					for (int i = at_index; i < num_proc; i++) {
+						if ( time + 1 == procs[i].at) {	//도착한 프로세스 푸쉬
+							push(&front, &rear, num_proc + 1, i, queue);
+							at_index++;
+						}
+					}
+				}
 
 			if (procs[queue_index].et == -1) procs[queue_index].et = time;//?„ë¡œ?¸ìŠ¤ê? ìµœì´ˆë¡œ ?¤í–‰?œ ?œê°„?„ et? ?€??
 			if (procs[queue_index].rem == 0)	//?¤í–‰?„ë£Œ?˜???„ë¡œ?¸ìŠ?ë°”ê¿”ì£¼ê¸°
@@ -130,7 +137,7 @@ void RR(DATA* data)
 
 
 			}
-			else if (tq == index + 1)	//time-quantom? ?˜???„ë¡œ?¸ìŠ?ë°”ê¿”ì£¼ê¸°
+			else if (data->tq == index + 1)	//time-quantom? ?˜???„ë¡œ?¸ìŠ?ë°”ê¿”ì£¼ê¸°
 			{
 
 				push(&front, &rear, num_proc + 1, queue_index, queue);
