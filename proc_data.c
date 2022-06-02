@@ -83,23 +83,27 @@ void Print_table(DATA* datum) {
 	int np = datum->num_proc;
 	datum->twt = 0;
 	datum->ttat = 0;
+	datum->trt=0;
 	qsort(datum->procs, np, sizeof(PROC), compare_p);//procs를 다시 pid순으로 정렬
 
 	for (int i = 0; i < np; i++) {//twt ttat 계산
 		datum->twt += datum->procs[i].wt;
 		datum->ttat += datum->procs[i].tat;
+		datum->trt +=datum->procs[i].et-datum->procs[i].at;
+		
 	}
-	printf("-------------------------------------------------------------------\n");
-	printf(" Processes\tArrival\tBurst\tCompletion\tWaiting\tTurnaround\n");
-	printf("-------------------------------------------------------------------\n");
+	printf("-------------------------------------------------------------------------------------------\n");
+	printf(" Processes\tArrival\tBurst\tPriority\tCompletion\tWaiting\tTurnaround\tResponse\n");
+	printf("-------------------------------------------------------------------------------------------\n");
 	for (int i = 0; i < np; i++)
 	{
-		printf(" Process[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\n", datum->procs[i].p, datum->procs[i].at, datum->procs[i].bt, datum->procs[i].ct, datum->procs[i].wt, datum->procs[i].tat);
+		printf(" Process[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\n", datum->procs[i].p, datum->procs[i].at, datum->procs[i].bt,datum->procs[i].pri, datum->procs[i].ct, datum->procs[i].wt, datum->procs[i].tat,datum->procs[i].et-datum->procs[i].at);
 
 	}
 	printf("-------------------------------------------------------------------\n");
 	printf("Average waiting time : %.2f\n", (float)datum->twt/np);
 	printf("Average turnaround time : %.2f\n", (float)datum->ttat/np);
+	printf("Average response time : %.2f\n", (float)datum->trt/np);
 }
 void Print_gantt(DATA* datum) {
 
