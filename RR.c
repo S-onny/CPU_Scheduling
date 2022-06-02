@@ -155,6 +155,7 @@ void RR(DATA* data)
 
 	// ê°„??ì°¨íŠ?ê·¸ë¦¬ê¸?
 	Print_gantt(data);
+	printf("\n\n\n");
 	Print_readyQueue(data);
 	// ê°„??ì°¨íŠ??
 
