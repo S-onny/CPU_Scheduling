@@ -47,4 +47,5 @@ void Print_gantt(DATA* datum);
 int compare_a(const void* p1, const void* p2);//arrival 순서 퀵 정렬을 위한 compare 함수
 int compare_p(const void* p1, const void* p2);//pid순으로 정렬하기위한 compare 함수
 void push(int *front, int *rear, int max, int value, int queue[]);
+void pri_push(int *front, int *rear, int max, int value, int pri, int queue[], int pri_queue[]);
 int pop(int *front, int *rear, int max, int queue[]);
