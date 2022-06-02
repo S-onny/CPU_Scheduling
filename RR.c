@@ -12,27 +12,26 @@ void RR(DATA* data)
 
 	int gantt_index, time;
 	double ttat = 0, twt = 0;
-	// ijkn: ë°˜ë³µë¬¸?„ ?„?œ ë³€?˜, gantt_index:ê°„?¸ì°¨?¸ë? ê·¸ë¦¬ê¸??„?œ ë°°ì—´ë“¤ì˜ index
+	// ijkn: for itterative, gantt_index:for gantt chart˜ index
 	// num_proc = number of processes
 	// ttat = total turnaround time
 	// twt = total waiting time
-	// time: ?„ë¡œ?¸ì‹??œê°
-	// E:ë¬´í•œë£¨í”„ ?ˆì¶œ
+	// time: time goes on tictok++...
 	int front = -1;
 	int rear = -1;
-	int* queue = (int*)malloc((num_proc + 1) * sizeof(int)); //?€ê¸°í
-	int* g_p = (int*)malloc(sizeof(int));//ê°„?¸ì°¨?¸ë? ê·¸ë¦¬ê¸??„?œ ?™?ë°°ì—´ë“?
-	int* g_et = (int*)malloc(sizeof(int));//ê°„?¸ì°¨?¸ë? ê·¸ë¦¬ê¸??„?œ ?™?ë°°ì—´ë“?
-	int* g_bt = (int*)malloc(sizeof(int));//ê°„?¸ì°¨?¸ë? ê·¸ë¦¬ê¸??„?œ ?™?ë°°ì—´ë“?
-	int index = 0;		//Pop?¬ë?? ?€?œ ?¸ë±ìŠ?
-	int queue_index = -1;	//?„??CPU?? ì¤‘???„ë¡œ?¸ìŠ??¸ë±ìŠ?
-	int at_index = 0;	//?„ì°©í•œ ?„ë¡œ?¸ìŠ??¸ë±ìŠ?
+	int* queue = (int*)malloc((num_proc + 1) * sizeof(int)); //ready queue alloc
+	int* g_p = (int*)malloc(sizeof(int));//--------------------
+	int* g_et = (int*)malloc(sizeof(int));//arrays for gantt
+	int* g_bt = (int*)malloc(sizeof(int));//-------------------
+	int index = 0;		//for Pop
+	int queue_index = -1;	//
+	int at_index = 0;	//
 
-	qsort(procs, num_proc, sizeof(PROC), compare_a); //?„ì°??œ?œ?€ë¡œ ?•??ê°™?„?œ ?„ë¡œ?¸ìŠ?ë²ˆ?¸ëŒ€ë¡œ)
+	qsort(procs, num_proc, sizeof(PROC), compare_a); //sort by arrival. coincidence: sort by pid.
 
 	time = 0;
 	gantt_index = 0;
-	int N = num_proc;//N:?¤í–‰????˜ì§€ ?Š?€ ?„ë¡œ?¸ìŠ??˜. ?…?¥ëœ ?„ë¡œ?¸ìŠ¤ìˆ˜ë¥?ë³µì‚¬í•˜??ì´ˆê¸°í™”
+	int N = num_proc;//N is # of processes which not yet completed.
 
 	
 	if (at_index < num_proc) {
@@ -45,9 +44,9 @@ void RR(DATA* data)
 		}
 	}
 
-	while (N > 0) { //ì¢…ë£Œì¡°ê±´: line136 
+	while (N > 0) {
 
-		if (index == 0) {	//?¸ë±ìŠ¤ê? 0?´ë©´ pop?˜ê³  ì´ˆê¸°í™”
+		if (index == 0) {	//time to pop process
 
 			queue_index = pop(&front, &rear, num_proc + 1, queue);
 
@@ -61,10 +60,10 @@ void RR(DATA* data)
 						}
 					}
 				}
-				time++;//?œê°„?ë¦„
+				time++;//time goes on. next cycle.
 				continue;
 			}
-			if (procs[queue_index].p == g_p[gantt_index - 1]) {	//?„ ?„ë¡œ?¸ìŠ¤ëž‘ ?„ ?„ë¡œ?¸ìŠ??™?¼í•˜ë©?ê°„?¸ì¸ë±ìŠ?? ì§€
+			if (procs[queue_index].p == g_p[gantt_index - 1]) {	//find out if this process was being execution
 				gantt_index--;
 			}
 			else {
@@ -79,11 +78,11 @@ void RR(DATA* data)
 			index = 0;
 		}
 
-		for (int i = 0; i < num_proc; i++) {	//?¤í–‰????˜ì§€ ?Š?€ ?„ë¡œ?¸ìŠ¤ì? ?¤í–‰?˜ì§€ ?Š?€ ?„ë¡œ?¸ìŠ¤ë“¤ì˜ ?€ê¸°ì‹œê°„ ì¦ê°€
+		for (int i = 0; i < num_proc; i++) {	//arrived, not executed and not completed guys will wait for now
 			if (i != queue_index && procs[i].at <= time && (procs[i].c == -1))
 				(procs[i].wt)++;
 		}
-		(procs[queue_index].rem)--;//?¤í–‰ì¤‘???„ë¡œ?¸ìŠ¤ì˜ remain time ê°?Œ
+		(procs[queue_index].rem)--;//processing process's remain time has decreased
 		(g_bt[gantt_index])++;
 
 		if (at_index < num_proc) {
@@ -95,14 +94,14 @@ void RR(DATA* data)
 			}
 		}
 
-		if (procs[queue_index].et == -1) procs[queue_index].et = time;//?„ë¡œ?¸ìŠ¤ê? ìµœì´ˆë¡œ ?¤í–‰?œ ?œê°„?„ et? ?€??
-		if (procs[queue_index].rem == 0)	//?¤í–‰?„ë£Œ?˜???„ë¡œ?¸ìŠ?ë°”ê¿”ì£¼ê¸°
+		if (procs[queue_index].et == -1) procs[queue_index].et = time;//Now is it's First pop o'clock.
+		if (procs[queue_index].rem == 0)	//It's done!
 		{
 			procs[queue_index].ct = time + 1;
 			procs[queue_index].tat = procs[queue_index].ct - procs[queue_index].at;
 			procs[queue_index].c = 0;
-			N = N - 1;//?¤í–‰ê°€?¥í•œ ?„ë¡œ?¸ìŠ??˜ ê°?Œ
-			if (N == 0) {//ëª¨ë“  ?„ë¡œ?¸ìŠ¤ê? ?¤í–‰ì¢…ë£Œ?œ ê²½ìš?ë°˜ë³µë¬¸ ?ˆì¶œ
+			N = N - 1;//
+			if (N == 0) {//no more executables.
 				time++;
 				break;
 			}
@@ -111,7 +110,7 @@ void RR(DATA* data)
 
 
 		}
-		else if (data->tq == index + 1)	//time-quantom? ?˜???„ë¡œ?¸ìŠ?ë°”ê¿”ì£¼ê¸°
+		else if (data->tq == index + 1)	//time-quantom over. change gantt
 		{
 
 			push(&front, &rear, num_proc + 1, queue_index, queue);
@@ -123,10 +122,10 @@ void RR(DATA* data)
 		else
 			index++;
 
-		time++;//?œê°„???ë¦„
+		time++;//time goes on
 
 	}
-	//?„ë¡œ?¸ì‹?ì¢…ë£Œ
+	//end of processing
 
 	qsort(procs, num_proc, sizeof(PROC), compare_p);//procsë¥??¤ì‹œ pid?œ?¼ë? ?•??
 
@@ -138,14 +137,14 @@ void RR(DATA* data)
 	free(queue);
 
 
-	Print_table(data);
+	
 
-	// ê°„??ì°¨íŠ?ê·¸ë¦¬ê¸?
+	// gantt chart
 	Print_gantt(data);
+	Print_table(data);
 	printf("\n\n\n");
 	Print_readyQueue(data);
-	// ê°„??ì°¨íŠ??
-
+	// end of func
 
 
 	return;
