@@ -22,8 +22,8 @@ int main(void) {
 		int tq = 0;
 		int check[7] = { 0, };
 		PROC* procs = NULL;//프로세스 구조체 배열
-
-		printf("1.File Input\n2.CLI Input\n");
+		printf("Please Select Your Input.\n");
+		printf("1.File Input\n2.CLI Input\n\n");
 		while (!(f >= '1' && f <= '2')) {
 			f = getch();
 		}
@@ -78,7 +78,7 @@ int main(void) {
 			int del;
 
 			printf("\n\nChoose the algorithm\n");
-			printf("0.Edit Proccess\n");
+			printf("0.Edit Process\n");
 			printf("1.FCFS\n");
 			printf("2.SJF\n");
 			printf("3.SRTF\n");
@@ -90,6 +90,7 @@ int main(void) {
 				s = getch();
 			}
 			if (s == '0') {
+				printf("\nEdit Process Selected!\n");
 				printf("1.Delete Process\n");
 				printf("2.Add Process\n");
 				while (!(s2 >= '1' && s <= '2')) {
@@ -97,7 +98,7 @@ int main(void) {
 				}
 				if (s2 == '1') {
 					num_proc--;
-					printf("Enter the process number that you would like to delete\n");
+					printf("\nEnter the process number that you would like to delete\n");
 					scanf("%d", &del);
 					Destroy_data(Datas);
 					for (int i = del - 1; i < num_proc; i++) {
@@ -123,8 +124,8 @@ int main(void) {
 				else if (s2 == '2') {
 					num_proc++;
 					procs = (PROC*)realloc(procs, sizeof(PROC)*num_proc);
-					printf("Enter the process\n");
-					printf("Processes\tArrival Time\tBurst time\tPriority\n");
+					printf("\nEnter the process\n");
+					printf("Processes\tArrival Time\tBurst time\tPriority\n\t\t");
 					scanf("%d %d %d", &(procs[num_proc-1].at), &(procs[num_proc - 1].bt), &(procs[num_proc - 1].pri));
 					procs[num_proc-1].p = num_proc;
 					for (int i = 0; i < num_proc; i++) {
@@ -145,7 +146,7 @@ int main(void) {
 				continue;
 			}
 			else if (s == '1') {
-				printf("FCFS Selected!\n");
+				printf("\nFCFS Selected!\n");
 
 				if (check[s - '1'] == 0) {
 					FCFS(&Datas[0]);
@@ -158,7 +159,7 @@ int main(void) {
 				}
 			}
 			else if (s == '2') {
-				printf("SJF Selected!\n");
+				printf("\nSJF Selected!\n");
 				if (check[s - '1'] == 0) {
 					SJF(&Datas[1]);
 					check[s - '1'] = 1;
@@ -169,7 +170,7 @@ int main(void) {
 				}
 			}
 			else if (s == '3') {
-				printf("SRTF Selected!\n");
+				printf("\nSRTF Selected!\n");
 				if (check[s - '1'] == 0) {
 					SRTF(&Datas[2]);
 					check[s - '1'] = 1;
@@ -180,7 +181,7 @@ int main(void) {
 				}
 			}
 			else if (s == '4') {
-				printf("RR Selected!\n");
+				printf("\nRR Selected!\n");
 				if (check[s - '1'] == 0) {
 					RR(&Datas[3]);
 					check[s - '1'] = 1;
@@ -192,7 +193,7 @@ int main(void) {
 				}
 			}
 			else if (s == '5') {
-				printf("NON-Preemptive Priority Selected!\n");
+				printf("\nNON-Preemptive Priority Selected!\n");
 				if (check[s - '1'] == 0) {
 					np_priority(&Datas[4]);
 					check[s - '1'] = 1;
@@ -203,7 +204,7 @@ int main(void) {
 				}
 			}
 			else if (s == '6') {
-				printf("Preemptive Priority Selected!\n");
+				printf("\nPreemptive Priority Selected!\n");
 				if (check[s - '1'] == 0) {
 					pre_pri(&Datas[5]);
 					check[s - '1'] = 1;
@@ -214,7 +215,7 @@ int main(void) {
 				}
 			}
 			else if (s == '7') {
-				printf("Non-Preemptive Priority with RR Selected!\n");
+				printf("\nNon-Preemptive Priority with RR Selected!\n");
 				if (check[s - '1'] == 0) {
 					np_pri_rr(&Datas[6]);
 					check[s - '1'] = 1;
