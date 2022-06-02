@@ -7,7 +7,7 @@ void FCFS(DATA* data);
 void RR(DATA* procs);
 void pre_pri(DATA* data);
 void SRTF(DATA* data);
-void pre_pri(DATA* data);
+void np_priority(DATA* data);
 void SJF(DATA* data);
 void np_pri_rr(DATA *data);
 //본인함수 넣어주세요
