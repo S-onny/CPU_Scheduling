@@ -297,22 +297,7 @@ void pri_push(int *front, int *rear, int max, int value, int pri, int queue[], i
 			swap(queue[(*rear - i) % max], queue[(*rear - i - 1) % max], temp);
 		}
 	}
-	if (*rear <= *front) {
 
-		for (int i = 0; i < max - (*front - *rear); i++) {
-			printf("(%d)%d ", (max + *rear - i) % max,pri_queue[(max + *rear - i) % max] );
-		}
-		printf("\n");
-	
-	}
-	else {
-		printf("여기");
-		for (int i = 0; i< *rear - *front ; i++) {
-			printf("%d ", pri_queue[(*rear - i) % max]   );
-		}
-
-		printf("\n");
-	}
 	
 
 }
