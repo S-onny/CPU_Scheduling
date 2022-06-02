@@ -12,11 +12,11 @@ typedef struct {
 	int rem;//remain burst time
 	int c;//완료했으면 0 아니면 -1
 }PROC;
-typedef struct{
+typedef struct {
 	PROC* procs;
 	int num_proc;//number of processes
 	int tq;//time quantum
-	//for gantt chart&readyQueue sim
+		   //for gantt chart&readyQueue sim
 	int* g_p;
 	int* g_et;
 	int* g_bt;
@@ -27,13 +27,13 @@ typedef struct{
 	int trt;//total response time
 }DATA;
 //열린 파일로부터 데이터를 읽어 프로세스 배열을 채우는 함수
-PROC* Process_load(FILE* fp,int* num_proc,int* tq);
+PROC* Process_load(FILE* fp, int* num_proc, int* tq);
 
 //입력된 프로세스 배열을 복사
 PROC* Copy_processes(PROC* procs, int num_proc);
 
 //입력된 프로세스 배열로부터 스케쥴링 함수에 넣을 데이터 구조 배열 생성
-DATA* Make_dataIn(PROC* procArr,int num_proc,int tq);
+DATA* Make_dataIn(PROC* procArr, int num_proc, int tq);
 //데이터 구조배열 전체 제거(free)
 void Destroy_data(DATA* datas);
 
@@ -46,3 +46,5 @@ void Print_gantt(DATA* datum);
 
 int compare_a(const void* p1, const void* p2);//arrival 순서 퀵 정렬을 위한 compare 함수
 int compare_p(const void* p1, const void* p2);//pid순으로 정렬하기위한 compare 함수
+void push(int *front, int *rear, int max, int value, int queue[]);
+int pop(int *front, int *rear, int max, int queue[]);
