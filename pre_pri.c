@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "proc_data.h"
 #define INT_MAX	2147483647//int의 최댓값 define
 #define swap(x, y, temp) ( (temp)=(x), (x)=(y), (y)=(temp) ) 	// 배열 요소의 순서를 바꾸기 위한 함수
@@ -30,7 +31,6 @@ void pre_pri(DATA* data)
 	int high_pri_index=-1;// 실행가능한 프로세스중 가장priority 높은 프로세스의 index
 
         qsort(procs, num_proc, sizeof(PROC), compare_a);//도착 순서대로 정렬(같을시 프로세스 번호대로)
-		printf("sorting");
 		time=0;
 		gantt_index=0;
 		int N=num_proc;//N:실행이 끝나지 않은 프로세스 수. 입력된 프로세스수를 복사하여 초기화
