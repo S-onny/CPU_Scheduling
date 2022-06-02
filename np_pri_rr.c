@@ -3,26 +3,11 @@
 #include "proc_data.h"
 #define INT_MAX 2147483647
 
-int compare_a(const void *p1, const void *p2);
-int compare_p(const void *p1, const void *p2);
-
-void push(int *front, int *rear, int max, int value, int queue[])
+void np_pri_rr(DATA * data)
 {
-	*rear = (*rear + 1) % max;
-	queue[*rear] = value;
-}
-
-int pop(int *front, int *rear, int max, int queue[])
-{
-	if (*rear == *front)
-		return -1;
-	*front = (*front + 1) % max;
-
-	return queue[*front];
-}
-
-void np_pri_rr(PROC *procs, int num_proc, int tq)
-{
+	int num_proc = data->num_proc;
+	PROC* procs = data->procs;
+	int tq = (data->tq);
 	int n, gantt_index, time;
 	double ttat = 0, twt = 0;
 	int front = -1, rear = -1;
@@ -132,146 +117,23 @@ void np_pri_rr(PROC *procs, int num_proc, int tq)
 		time++;
 	}
 
-	qsort(procs, num_proc, sizeof(PROC), compare_p);
+	qsort(procs, num_proc, sizeof(PROC), compare_p);//sort as pid
 
-	for (int i = 0; i < num_proc; i++)
-	{
-		twt += procs[i].wt;
-		ttat += procs[i].tat;
-	}
 
-	printf("-------------------------------------------------------------------\n");
-	printf(" Processes\tArrival\tBurst\tCompletion\tWaiting\tTurnaround\n");
-	printf("-------------------------------------------------------------------\n");
-	for (int i = 0; i < num_proc; i++)
-	{
-		printf(" Process[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\n", procs[i].p, procs[i].at, procs[i].bt, procs[i].ct, procs[i].wt, procs[i].tat);
-	}
-	printf("-------------------------------------------------------------------\n");
-	printf("Average waiting time : %.2f\n", twt / num_proc);
-	printf("Average turnaround time : %.2f\n", ttat / num_proc);
+	(data->g_p) = g_p;
+	(data->g_et) = g_et;
+	(data->g_bt) = g_bt;
+	(data->gantt_index) = gantt_index;
+	free(queue);
 
-	// Gantt Chart
-	printf("\n\n");
-	printf("Gantt Chart %d %d", gantt_index, g_p[gantt_index]);
-	printf("\n");
 
-	for (int i = 1; i <= gantt_index + 1; i++)
-	{
-		printf(" ----");
-		n = i - 1;
-		for (int j = 0; j < g_bt[n]; j++)
-		{
-			printf("-");
-		}
+	
 
-		if (i != gantt_index + 1 && g_et[i] > g_et[n] + g_bt[n])
-		{
-
-			printf(" -");
-			for (int k = 0; k < g_et[i] - (g_et[n] + g_bt[n]); k++)
-			{
-				printf("-");
-			}
-		}
-	}
-
-	printf("\n");
-
-	for (int i = 1; i <= gantt_index + 1; i++)
-	{
-		n = i - 1;
-		printf("| P%d ", g_p[n]);
-
-		for (int j = 0; j < g_bt[n]; j++)
-		{
-			printf(" ");
-		}
-
-		if (i != gantt_index + 1 && g_et[i] > g_et[n] + g_bt[n])
-		{
-			printf("| ");
-			for (int k = 0; k < (g_et[i] - (g_et[n] + g_bt[n])); k++)
-			{
-				printf(" ");
-			}
-		}
-	}
-
-	printf("|");
-	printf("\n");
-
-	for (int i = 1; i <= gantt_index + 1; i++)
-	{
-		printf(" ----");
-		for (int j = 0; j < g_bt[i - 1]; j++)
-		{
-			printf("-");
-		}
-
-		n = i - 1;
-		if (i != gantt_index + 1 && g_et[i] > g_et[n] + g_bt[n])
-		{
-			printf(" -");
-			for (int k = 0; k < (g_et[i] - (g_et[n] + g_bt[n])); k++)
-			{
-				printf("-");
-			}
-		}
-	}
-
-	printf("\n");
-
-	int a, b, c, d, e, f;
-	for (int i = 1; i <= gantt_index + 1; i++)
-	{
-		printf("%d    ", g_et[i - 1]);
-		for (int j = 0; j < g_bt[i - 1]; j++)
-		{
-			printf(" ");
-		}
-
-		a = g_et[i - 1];
-		b = 0;
-		while (a != 0)
-		{
-			a = a / 10;
-			++b;
-		}
-
-		for (c = 0; c < b - 1; c++)
-		{
-			printf("\b");
-		}
-
-		n = i - 1;
-		if (i != gantt_index + 1 && g_et[i] > g_et[n] + g_bt[n])
-		{
-			printf("%d ", g_et[n] + g_bt[n]);
-			for (int k = 0; k < (g_et[i] - (g_et[n] + g_bt[n])); k++)
-			{
-				printf(" ");
-			}
-
-			d = g_et[n] + g_bt[n];
-			e = 0;
-			while (d != 0)
-			{
-				d = d / 10;
-				++e;
-			}
-
-			for (f = 0; f < e - 1; f++)
-			{
-				printf("\b");
-			}
-		}
-	}
-
-	printf("%d", g_et[gantt_index] + g_bt[gantt_index]);
-	printf("\n");
-
-	free(g_p);
-	free(g_et);
-	free(g_bt);
+	// gantt chart
+	Print_gantt(data);
+	Print_table(data);
+	printf("\n\n\n");
+	Print_readyQueue(data);
+	// end of func
+	return;
 }
