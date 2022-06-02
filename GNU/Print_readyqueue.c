@@ -25,9 +25,9 @@ void Print_readyQueue(DATA* datum){
 
         printf("Ready queue table\n");
 		
-        printf(" ------- ------------- ------------ \n");
-        printf("| Time  | Ready queue | Remaintime |\n");
-        printf(" ------- ------------- ------------ \n");
+        printf(" ------- ------------- ------------ ------------ \n");
+        printf("| Time  | Ready queue | Remaintime | Priority   |\n");
+        printf(" ------- ------------- ------------ ------------ \n");
 		int i,j,a,c,d,e;
 		int gi=datum->gantt_index;
 		int num_proc = datum->num_proc;
@@ -39,6 +39,7 @@ void Print_readyQueue(DATA* datum){
 	int *pct= (int*)malloc(sizeof(int) * num_proc);
 	int *pp= (int*)malloc(sizeof(int) * num_proc); 
 	int *prem= (int*)malloc(sizeof(int) * num_proc);
+	int *ppri= (int*)malloc(sizeof(int) * num_proc);
 		for (i=0;i<=(gi);i++){
 			ct[i]=bt[i]+et[i];
 		}
@@ -47,6 +48,7 @@ void Print_readyQueue(DATA* datum){
 			pct[i]=(datum->procs)[i].ct;
 			pp[i]=(datum->procs)[i].p;
 			prem[i]=(datum->procs)[i].bt;
+			ppri[i]=(datum->procs)[i].pri;
 		}
 
         for (a = 0; a <= ct[gi]; a++)             // 마지막 프로세스가 실행 종료될때까지의 시간 a
@@ -74,10 +76,12 @@ void Print_readyQueue(DATA* datum){
 						printf("|       ");
 					}
 					printf("|     P%d      ", pp[i]);
-                    backspace(p[e]);
+                    backspace(pp[i]);
 					
                     printf("|     %d      ", prem[i]);
                     backspace(prem[i]);
+					printf("|     %d      ", ppri[i]);
+                    backspace(ppri[i]);
                     printf("|\n");
                 }
 				
@@ -85,9 +89,9 @@ void Print_readyQueue(DATA* datum){
 
             if (d == 0)                 // 대기중인 프로세스가 없을때
             {
-                printf("|             |            |\n");
+                printf("|             |            |            |\n");
 			}
-			printf(" ------- ------------- ------------ \n");
+			printf(" ------- ------------- ------------ ------------ \n");
         }
         // Ready queue table 끝
 	free(ct);
@@ -95,4 +99,5 @@ void Print_readyQueue(DATA* datum){
 	free(pct);
 	free(pp);
 	free(prem);
+	free(ppri);
 }
