@@ -1,6 +1,5 @@
-#include <stdio.h>
-#define INT_MAX	2147483647//int의 최댓값 define
-typedef{
+
+typedef struct{
 	char name[40];
 	int twt;
 	int ttat;
@@ -15,7 +14,7 @@ int compare_t(const void* p1, const void* p2) {//ttat순으로 정렬하기위�
 int compare_r(const void* p1, const void* p2) {//trt순으로 정렬하기위한 compare 함수
 	return ((RANK*)p1)->trt - ((RANK*)p2)->trt;
 }
-void Find_best(int * check,DATA* datas){
+void al_rank(int * check,DATA* datas){
 	int np=datas[0].num_proc;
 	for(int i=0;i<7;i++){//check all algorithms are executed
 		if(check[i]==0) {
@@ -29,26 +28,25 @@ void Find_best(int * check,DATA* datas){
 	for(int i = 0 ; i < 7 ; i++){
 		switch(i){
 			case(1):
-				strcpy(ranks[i].name[0],"SJF");
+				strcpy((ranks[i].name),"SJF");
 				break;
 			case(2):
-				strcpy(ranks[i].name[0],"SRTF");
+				strcpy((ranks[i].name),"SRTF");
 				break;
 			case(3):
-				strcpy(ranks[i].name[0],"RR");
-				str2="RR";
+				strcpy((ranks[i].name),"RR");
 				break;
 			case(4):
-				strcpy(ranks[i].name[0],"Non-Preemptive Priority");
+				strcpy((ranks[i].name),"Non-Preemptive Priority");
 				break;
 			case(5):
-				strcpy(ranks[i].name[0],"Preemptive Priority");
+				strcpy((ranks[i].name),"Preemptive Priority");
 				break;
 			case(6):
-				strcpy(ranks[i].name[0],"Non-Preemptive Priority with RR");
+				strcpy((ranks[i].name),"Non-Preemptive Priority with RR");
 				break;
 			default:
-				strcpy(ranks[i].name[0],"FCFS");
+				strcpy((ranks[i].name),"FCFS");
 		}
 			ranks[i].twt=(datas[i].twt);
 			ranks[i].ttat=(datas[i].ttat);
@@ -61,7 +59,7 @@ void Find_best(int * check,DATA* datas){
 			scanf("%d",&s);
 			if(s<=3 && 1<=s) break;
 			else{
-				while(getchar()!="\n");
+				while(getchar()!='\n');
 				printf("Retry with valid integer\n");
 			}
 		}
@@ -69,14 +67,14 @@ void Find_best(int * check,DATA* datas){
 		switch(s){
 			case(3):
 				qsort(ranks,7,sizeof(RANK),compare_r);
-				strcpy(str[0],"Avrg Response time");
+				strcpy(str,"Avrg Response time");
 				printf("Ranking of Algorithms by %s\n",str);
 				printf("Rank#\tAlgorithm\t\t\t\t Value\n");
 				printf("---------------------------------------------------------------\n");
 				printf("#%d\t%s\t\t\t\t %.2f",1,ranks[0].name,(float)(ranks[0].trt)/np); 
 				N=1;
-				for(i=1;i<7;i++){
-					if(ranks[i-1]trt==ranks[i].trt){
+				for(int i=1;i<7;i++){
+					if(ranks[i-1].trt==ranks[i].trt){
 						printf("#%d\t%s\t\t\t\t %.2f\n",N,ranks[i].name,(float)(ranks[i].trt)/np);
 					}
 					else{
@@ -87,14 +85,14 @@ void Find_best(int * check,DATA* datas){
 				break;
 			case(2):
 				qsort(ranks,7,sizeof(RANK),compare_t);
-				strcpy(str[0],"Avrg Turnaround time");
+				strcpy(str,"Avrg Turnaround time");
 				printf("Ranking of Algorithms by %s\n",str);
 				printf("Rank#\tAlgorithm\t\t\t\t Value\n");
 				printf("---------------------------------------------------------------\n");
 				printf("#%d\t%s\t\t\t\t %.2f",1,ranks[0].name,(float)(ranks[0].ttat)/np); 
 				N=1;
-				for(i=1;i<7;i++){
-					if(ranks[i-1]ttat==ranks[i].ttat){
+				for(int i=1;i<7;i++){
+					if(ranks[i-1].ttat==ranks[i].ttat){
 						printf("#%d\t%s\t\t\t\t %.2f\n",N,ranks[i].name,(float)(ranks[i].ttat)/np);
 					}
 					else{
@@ -105,14 +103,14 @@ void Find_best(int * check,DATA* datas){
 				break;
 			default:
 				qsort(ranks,7,sizeof(RANK),compare_w);
-				strcpy(str[0],"Avrg Wait time");
+				strcpy(str,"Avrg Wait time");
 				printf("Ranking of Algorithms by %s\n",str);
 				printf("Rank#\tAlgorithm\t\t\t\t Value\n");
 				printf("---------------------------------------------------------------\n");
 				printf("#%d\t%s\t\t\t\t %.2f",1,ranks[0].name,(float)(ranks[0].twt)/np); 
 				N=1;
-				for(i=1;i<7;i++){
-					if(ranks[i-1]twt==ranks[i].twt){
+				for(int i=1;i<7;i++){
+					if(ranks[i-1].twt==ranks[i].twt){
 						printf("#%d\t%s\t\t\t\t %.2f\n",N,ranks[i].name,(float)(ranks[i].twt)/np);
 					}
 					else{
@@ -128,7 +126,7 @@ void Find_best(int * check,DATA* datas){
 			scanf("%d",&s2);
 			if(s2<=1 && 0<=s2) break;
 			else{
-				while(getchar()!="\n");
+				while(getchar()!='\n');
 				printf("Retry with valid integer\n");
 			}	
 			
