@@ -214,12 +214,13 @@ void SJF(DATA* data)
 		(data->g_bt) = g_bt;
 		(data->gantt_index) = num_proc-1;
 
-		Print_table(data);
+		
 
 		// 간트 차트 그리기
 		Print_gantt(data);
 		// 간트 차트 끝
-
+		Print_table(data);
+	
 		printf("\n\n\n");
 
 		// Ready queue table    
