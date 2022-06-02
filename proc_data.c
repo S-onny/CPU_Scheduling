@@ -4,45 +4,45 @@
 #include <string.h>
 #include "proc_data.h"
 
-int Process_load(FILE* fp, int* num_proc, int* tq, PROC** procs) {
-	PROC temp;
+PROC* Process_load(FILE* fp, int* num_proc, int* tq) {
+	PROC* procs;
 	int ret;
 	char discard;
 	ret = fscanf(fp, "%d", num_proc);
 	if (ret == EOF)
 	{
 		printf("FILE error:invaild format or empty!");
-		return 0;
+		return NULL;
 	}
-	printf("number of processes:%d\n",*num_proc);
-	*procs = (PROC*)realloc(*procs, sizeof(PROC)*(*num_proc));
-	
-	for (int i = 0; i<(*num_proc); i++)
+	printf("number of processes:%d\n", *num_proc);
+	procs = (PROC*)malloc( sizeof(PROC) * (*num_proc));
+
+	for (int i = 0; i < (*num_proc); i++)
 	{
-		ret = fscanf(fp, " %c%d%d%d%d",&discard, &(temp.p), &(temp.at), &(temp.bt), &(temp.pri));
+		ret = fscanf(fp, " %c%d%d%d%d", &discard, &(procs[i].p), &(procs[i].at), &(procs[i].bt), &(procs[i].pri));
 		if (ret == EOF)
 		{
 			printf("FILE error:not enough processes or invaild format");
-			return 0;
+			return NULL;
 		}
-		printf("reading process P%d...\n", temp.p);
-		printf(" %d %d %d\n", temp.at, temp.bt, temp.pri);
-		(*procs)[i] = temp;
-		(*procs)[i].rem = (*procs)[i].bt;//남은시간 burst time으로 초기화
-		(*procs)[i].wt = 0;//기타 필요한 수치들 초기화
-		(*procs)[i].et = 0 - 1;//최초 실행시간 구분을 위해 -1로 초기화
-		(*procs)[i].ct = 0;
-		(*procs)[i].tat = 0;
-		(*procs)[i].c = -1;
+		printf("reading process P%d...\n", procs[i].p);
+		printf(" %d %d %d\n", procs[i].at, procs[i].bt, procs[i].pri);
+
+		procs[i].rem = procs[i].bt;//남은시간 burst time으로 초기화
+		procs[i].wt = 0;//기타 필요한 수치들 초기화
+		procs[i].et = 0 - 1;//최초 실행시간 구분을 위해 -1로 초기화
+		procs[i].ct = 0;
+		procs[i].tat = 0;
+		procs[i].c = -1;
 	}
 	ret = fscanf(fp, "%d", tq);
 	if (ret == EOF)
 	{
 		printf("FILE error:No Time quantum!");
-		return 0;
+		return NULL;
 	}
-	printf("tq:%d\n",*tq);
-	return 1;
+	printf("tq:%d\n", *tq);
+	return procs;
 
 
 }
