@@ -88,7 +88,7 @@ void Print_table(DATA* datum) {
 	datum->twt = 0;
 	datum->ttat = 0;
 	datum->trt = 0;
-	int* rt=(int*)malloc(sizeof(int)*np);
+	int* rt = (int*)malloc(sizeof(int)*np);
 	qsort(datum->procs, np, sizeof(PROC), compare_p);//procs를 다시 pid순으로 정렬
 
 	for (int i = 0; i < np; i++) {//twt ttat 계산
@@ -277,13 +277,14 @@ void pri_push(int *front, int *rear, int max, int value, int pri, int queue[], i
 	pri_queue[*rear] = pri;
 	
 	if (*rear <= *front) {
-		
-		for (int i = 0; i < max-(*front - *rear) ; i++) {
-			if (pri_queue[(*rear - i) % max] >= pri_queue[(*rear - i - 1) % max]) {
+
+		for (int i = 0; i < max-(*front - *rear)-1 ; i++) {
+
+			if (pri_queue[(max+*rear - i) % max] >= pri_queue[(max + *rear - i - 1) % max]) {
 				break;
 			}
-			swap(pri_queue[(*rear - i) % max], pri_queue[(*rear - i - 1) % max], temp);
-			swap(queue[(*rear - i) % max], queue[(*rear - i - 1) % max], temp);
+			swap(pri_queue[(max + *rear - i) % max], pri_queue[(max + *rear - i - 1) % max], temp);
+			swap(queue[(max + *rear - i) % max], queue[(max + *rear - i - 1) % max], temp);
 		}
 	}
 	else {
@@ -296,6 +297,23 @@ void pri_push(int *front, int *rear, int max, int value, int pri, int queue[], i
 			swap(queue[(*rear - i) % max], queue[(*rear - i - 1) % max], temp);
 		}
 	}
+	if (*rear <= *front) {
+
+		for (int i = 0; i < max - (*front - *rear); i++) {
+			printf("(%d)%d ", (max + *rear - i) % max,pri_queue[(max + *rear - i) % max] );
+		}
+		printf("\n");
+	
+	}
+	else {
+		printf("여기");
+		for (int i = 0; i< *rear - *front ; i++) {
+			printf("%d ", pri_queue[(*rear - i) % max]   );
+		}
+
+		printf("\n");
+	}
+	
 
 }
 
