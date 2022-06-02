@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "proc_data.h"
+#define swap(x, y, temp) ( (temp)=(x), (x)=(y), (y)=(temp) ) 	
 
 PROC* Process_load(FILE* fp, int* num_proc, int* tq) {
 	PROC* procs;
@@ -266,6 +267,36 @@ void push(int *front, int *rear, int max, int value, int queue[])
 {
 	*rear = (*rear + 1) % max;
 	queue[*rear] = value;
+}
+void pri_push(int *front, int *rear, int max, int value, int pri, int queue[], int pri_queue[])
+{
+	int temp;
+	
+	*rear = (*rear + 1) % max;
+	queue[*rear] = value;
+	pri_queue[*rear] = pri;
+	
+	if (*rear <= *front) {
+		
+		for (int i = 0; i < max-(*front - *rear) ; i++) {
+			if (pri_queue[(*rear - i) % max] >= pri_queue[(*rear - i - 1) % max]) {
+				break;
+			}
+			swap(pri_queue[(*rear - i) % max], pri_queue[(*rear - i - 1) % max], temp);
+			swap(queue[(*rear - i) % max], queue[(*rear - i - 1) % max], temp);
+		}
+	}
+	else {
+		
+		for (int i = 0; i< *rear - *front-1 ; i++) {
+			if (pri_queue[(*rear - i) % max] >= pri_queue[(*rear - i - 1) % max]) {
+				break;
+			}
+			swap(pri_queue[(*rear - i) % max], pri_queue[(*rear - i - 1) % max], temp);
+			swap(queue[(*rear - i) % max], queue[(*rear - i - 1) % max], temp);
+		}
+	}
+
 }
 
 int pop(int *front, int *rear, int max, int queue[])
