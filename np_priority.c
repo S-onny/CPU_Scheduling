@@ -119,8 +119,9 @@ void np_priority(DATA* data)
 
 		// 간트 차트 그리기
 		Print_gantt(data);
+		
 		// 간트 차트 끝
-		// 간트 차트 끝
+	printf("\n\n\n");
 	Print_readyQueue(data);
 
 		
