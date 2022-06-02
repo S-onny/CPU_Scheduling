@@ -54,53 +54,58 @@ PROC* Copy_processes(PROC* procs, int num_proc) {
 }
 DATA* Make_dataIn(PROC* procArr, int num_proc,int tq) {
 	DATA* DataArr = (DATA*)malloc(sizeof(DATA) * 7);
+	DATA temp;
 	for (int i = 0; i < 7; i++) {
-		DataArr[i].num_proc = num_proc;
-		DataArr[i].tq = tq;
-		DataArr[i].procs = Copy_processes(procArr, num_proc);
-		DataArr[i].g_p = NULL;
-		DataArr[i].g_et = NULL;
-		DataArr[i].g_bt = NULL;
-		DataArr[i].gantt_index = 0;
-
+		temp.num_proc = num_proc;
+		temp.tq = tq;
+		temp.procs = Copy_processes(procArr, num_proc);
+		temp.g_p = NULL;
+		temp.g_et = NULL;
+		temp.g_bt = NULL;
+		temp.gantt_index = -1;
+		DataArr[i]=temp;
 	}
 	return DataArr;
 }
 
 void Destroy_data(DATA* datas) {
 	for (int i = 0; i < 7; i++) {
-		
-		if (datas[i].procs != NULL) free(datas[i].procs);
+		printf("Destroying %d's procs\n",i);
+		free(datas[i].procs);
 		if (datas[i].g_p != NULL) {
+			printf("Destroying %d'sGantt\n",i);
 			free(datas[i].g_p);
 			free(datas[i].g_et);
 			free(datas[i].g_bt);
 		}
-		free(datas);
+		
 	}
+	free(datas);
 }
 void Print_table(DATA* datum) {
 	int np = datum->num_proc;
 	datum->twt = 0;
 	datum->ttat = 0;
 	datum->trt=0;
+	int rt[np];
 	qsort(datum->procs, np, sizeof(PROC), compare_p);//procs를 다시 pid순으로 정렬
 
 	for (int i = 0; i < np; i++) {//twt ttat 계산
 		datum->twt += datum->procs[i].wt;
 		datum->ttat += datum->procs[i].tat;
-		datum->trt +=datum->procs[i].et-datum->procs[i].at;
+		rt[i]=datum->procs[i].et-datum->procs[i].at;
+		datum->trt +=rt[i];
 		
 	}
-	printf("-------------------------------------------------------------------------------------------\n");
+	printf("------------------------------------------------------------------------------------------------\n");
 	printf(" Processes\tArrival\tBurst\tPriority\tCompletion\tWaiting\tTurnaround\tResponse\n");
-	printf("-------------------------------------------------------------------------------------------\n");
+	printf("------------------------------------------------------------------------------------------------\n");
 	for (int i = 0; i < np; i++)
 	{
-		printf(" Process[%d]\t[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\t[%d]\n", datum->procs[i].p, datum->procs[i].at, datum->procs[i].bt,datum->procs[i].pri, datum->procs[i].ct, datum->procs[i].wt, datum->procs[i].tat,datum->procs[i].et-datum->procs[i].at);
+		printf(" P[%d]\t\t[%d]\t[%d]\t[%d]\t\t[%d]\t\t[%d]\t[%d]\t\t[%d]\n", datum->procs[i].p, datum->procs[i].at, datum->procs[i].bt,datum->procs[i].pri, datum->procs[i].ct, datum->procs[i].wt, datum->procs[i].tat,rt[i]);
 
 	}
-	printf("-------------------------------------------------------------------\n");
+	printf("------------------------------------------------------------------------------------------------\n");
 	printf("Average waiting time : %.2f\n", (float)datum->twt/np);
 	printf("Average turnaround time : %.2f\n", (float)datum->ttat/np);
 	printf("Average response time : %.2f\n", (float)datum->trt/np);
