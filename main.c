@@ -3,22 +3,25 @@
 #include <stdlib.h>
 #include "proc_data.h"
 
-void RR(DATA* procs, int tq);
+void FCFS(DATA* data);
+void RR(DATA* procs);
 void pre_pri(DATA* data);
 void SRTF(DATA* data);
 void pre_pri(DATA* data);
+void SJF(DATA* data);
+void np_pri_rr(DATA *data);
 //본인함수 넣어주세요
 
 
 int main(void) {
-	
+
 	while (1) {
 		char s1 = 0;
 		char f = 0; //파일 입출력
 		int num_proc = 1;
 		int tq = 0;
 		int check[7] = { 0, };
-		PROC* procs=NULL ;//프로세스 구조체 배열
+		PROC* procs = NULL;//프로세스 구조체 배열
 
 		printf("1.File Input\n2.CLI Input\n");
 		while (!(f >= '1' && f <= '2')) {
@@ -57,15 +60,16 @@ int main(void) {
 				fprintf(stderr, "error: opening file failed! \n");
 				return 0;
 			}
-			
-			procs =  Process_load(fp, &num_proc, &tq);
-			if (procs==NULL) return 0;
+
+			procs = Process_load(fp, &num_proc, &tq);
+			if (procs == NULL) return 0;
+			fclose(fp);
 		}
-		printf("%d씨발", procs[0].at);
 
-		DATA* Datas = Make_dataIn(procs, num_proc,tq);
 
-		
+		DATA* Datas = Make_dataIn(procs, num_proc, tq);
+
+
 
 		while (1) {
 			char s = 0;
@@ -86,24 +90,67 @@ int main(void) {
 				s = getch();
 			}
 			if (s == '0') {
-				printf("1.Delete Process");
-				printf("2.Add Process");
+				printf("1.Delete Process\n");
+				printf("2.Add Process\n");
 				while (!(s2 >= '1' && s <= '2')) {
 					s2 = getch();
 				}
 				if (s2 == '1') {
+					num_proc--;
 					printf("Enter the process number that you would like to delete\n");
 					scanf("%d", &del);
-
+					Destroy_data(Datas);
+					for (int i = del - 1; i < num_proc; i++) {
+						procs[i] = procs[i + 1];
+					}
+					printf("%d\n", procs[num_proc-1].p);
+					for (int i = 0; i < num_proc; i++) {
+						procs[i].rem = procs[i].bt;//남은시간 burst time으로 초기화
+						procs[i].wt = 0;//기타 필요한 수치들 초기화
+						procs[i].et = 0 - 1;//최초 실행시간 구분을 위해 -1로 초기화
+						procs[i].ct = 0;
+						procs[i].tat = 0;
+						procs[i].c = -1;
+					}
+			
+					Datas= Make_dataIn(procs, num_proc, tq);
+					
+					for (int i = 0; i < 7; i++) {
+						check[i] = 0;
+					}
+					printf("complete\n\n");
 				}
-				else if (s2 == '2') {}
+				else if (s2 == '2') {
+					num_proc++;
+					procs = (PROC*)realloc(procs, sizeof(PROC)*num_proc);
+					printf("Enter the process\n");
+					printf("Processes\tArrival Time\tBurst time\tPriority\n");
+					scanf("%d %d %d", &(procs[num_proc-1].at), &(procs[num_proc - 1].bt), &(procs[num_proc - 1].pri));
+					procs[num_proc-1].p = num_proc;
+					for (int i = 0; i < num_proc; i++) {
+						procs[i].rem = procs[i].bt;//남은시간 burst time으로 초기화
+						procs[i].wt = 0;//기타 필요한 수치들 초기화
+						procs[i].et = 0 - 1;//최초 실행시간 구분을 위해 -1로 초기화
+						procs[i].ct = 0;
+						procs[i].tat = 0;
+						procs[i].c = -1;
+					}
+					Datas = Make_dataIn(procs, num_proc, tq);
+					for (int i = 0; i < 7; i++) {
+						check[i] = 0;
+					}
+					printf("complete\n\n");
+					
+				}
+				continue;
 			}
 			else if (s == '1') {
 				printf("FCFS Selected!\n");
 
 				if (check[s - '1'] == 0) {
-										check[s - '1'] = 1;
-										//본인함수 넣어주세요
+					FCFS(&Datas[0]);
+					check[s - '1'] = 1;
+				
 				}
 				else {
 					Print_table(&Datas[s - '1']);
@@ -113,7 +160,7 @@ int main(void) {
 			else if (s == '2') {
 				printf("SJF Selected!\n");
 				if (check[s - '1'] == 0) {
-					//본인함수 넣어주세요
+					SJF(&Datas[1]);
 					check[s - '1'] = 1;
 				}
 				else {
@@ -135,7 +182,7 @@ int main(void) {
 			else if (s == '4') {
 				printf("RR Selected!\n");
 				if (check[s - '1'] == 0) {
-					RR(&Datas[3], tq);
+					RR(&Datas[3]);
 					check[s - '1'] = 1;
 				}
 				else
@@ -169,7 +216,7 @@ int main(void) {
 			else if (s == '7') {
 				printf("Non-Preemptive Priority with RR Selected!\n");
 				if (check[s - '1'] == 0) {
-					//본인함수 넣어주세요
+					np_pri_rr(&Datas[6]);
 					check[s - '1'] = 1;
 				}
 				else {
@@ -196,7 +243,7 @@ int main(void) {
 			else if (s1 == '3') {
 				break;
 			}
-			
+
 		}
 		Destroy_data(Datas);
 		free(procs);
