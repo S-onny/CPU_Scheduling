@@ -24,42 +24,42 @@ void RR(DATA* data)
 	
 	int gantt_index, time;
 	double ttat = 0, twt = 0;
-	// ijkn: 반복문?� ?�?� 변?�, gantt_index:간?�차?��? 그리�??�?� 배열들의 index
+	// ijkn: ë°˜ë³µë¬¸?„ ?„?œ ë³€?˜, gantt_index:ê°„?¸ì°¨?¸ë? ê·¸ë¦¬ê¸??„?œ ë°°ì—´ë“¤ì˜ index
 	// num_proc = number of processes
 	// ttat = total turnaround time
 	// twt = total waiting time
-	// time: ?�로?��??�각
-	// E:무한루프 ?�출
+	// time: ?„ë¡œ?¸ì‹??œê°
+	// E:ë¬´í•œë£¨í”„ ?ˆì¶œ
 	int front = -1;
 	int rear = -1;
-	int* queue = (int*)malloc((num_proc+1) * sizeof(int)); //?�기큐
-	int* g_p = (int*)malloc( sizeof(int));//간?�차?��? 그리�??�?� ?�?�배열�?
-	int* g_et = (int*)malloc( sizeof(int));//간?�차?��? 그리�??�?� ?�?�배열�?
-	int* g_bt = (int*)malloc(sizeof(int));//간?�차?��? 그리�??�?� ?�?�배열�?
-	int index = 0;		//Pop?��??� ?�?� ?�덱�?
-	int queue_index = -1;	//?�??CPU?�?�중???�로?��??�덱�?
-	int at_index = 0;	//?�착한 ?�로?��??�덱�?
+	int* queue = (int*)malloc((num_proc+1) * sizeof(int)); //?€ê¸°í
+	int* g_p = (int*)malloc( sizeof(int));//ê°„?¸ì°¨?¸ë? ê·¸ë¦¬ê¸??„?œ ?™?ë°°ì—´ë“?
+	int* g_et = (int*)malloc( sizeof(int));//ê°„?¸ì°¨?¸ë? ê·¸ë¦¬ê¸??„?œ ?™?ë°°ì—´ë“?
+	int* g_bt = (int*)malloc(sizeof(int));//ê°„?¸ì°¨?¸ë? ê·¸ë¦¬ê¸??„?œ ?™?ë°°ì—´ë“?
+	int index = 0;		//Pop?¬ë?? ?€?œ ?¸ë±ìŠ?
+	int queue_index = -1;	//?„??CPU?? ì¤‘???„ë¡œ?¸ìŠ??¸ë±ìŠ?
+	int at_index = 0;	//?„ì°©í•œ ?„ë¡œ?¸ìŠ??¸ë±ìŠ?
 
-	qsort(procs, num_proc, sizeof(PROC), compare_a); //?��??�?�?�로 ?�??같?�?� ?�로?��?번?�대로)
+	qsort(procs, num_proc, sizeof(PROC), compare_a); //?„ì°??œ?œ?€ë¡œ ?•??ê°™?„?œ ?„ë¡œ?¸ìŠ?ë²ˆ?¸ëŒ€ë¡œ)
 
 		time = 0;
 		gantt_index = 0;
-		int N = num_proc;//N:?�행???�?�지 ?�?� ?�로?��??�. ?�?�된 ?�로?�스수�?복사하??초기화
+		int N = num_proc;//N:?¤í–‰????˜ì§€ ?Š?€ ?„ë¡œ?¸ìŠ??˜. ?…?¥ëœ ?„ë¡œ?¸ìŠ¤ìˆ˜ë¥?ë³µì‚¬í•˜??ì´ˆê¸°í™”
 
-		if (at_index < num_proc && 0 == procs[at_index].at) {	//처?� ?�착한 ?�로?��??��?
+		if (at_index < num_proc && 0 == procs[at_index].at) {	//ì²˜?Œ ?„ì°©í•œ ?„ë¡œ?¸ìŠ??¸ì‰?
 			push(&front, &rear, num_proc + 1, at_index, queue);
 			at_index++;
 
 		}
 
-		while (N > 0) { //종료조건: line136 
+		while (N > 0) { //ì¢…ë£Œì¡°ê±´: line136 
 			
-			if (index == 0) {	//?�덱스�? 0?�면 pop?�고 초기화
+			if (index == 0) {	//?¸ë±ìŠ¤ê? 0?´ë©´ pop?˜ê³  ì´ˆê¸°í™”
 			
 				queue_index = pop(&front, &rear, num_proc + 1, queue);
 				
-				if (queue_index == -1) {//?�???�행가?�한 ?�로?��??�?�(idle)
-										  /*//?��?분?� ?�른?�?�?� 간?�차?��? 그리�??�?� ?�비 코?�?�
+				if (queue_index == -1) {//?„???¤í–‰ê°€?¥í•œ ?„ë¡œ?¸ìŠ??†?Œ(idle)
+										  /*//?´ë?ë¶„?€ ?¤ë¥¸?•?œ?˜ ê°„?¸ì°¨?¸ë? ê·¸ë¦¬ê¸??„?œ ?ˆë¹„ ì½”?œ?„
 										  if(gantt_index==0&&g_bt[j]==0){
 										  g_p[gantt_index]=0;
 										  g_et[gantt_index]=time;
@@ -77,10 +77,16 @@ void RR(DATA* data)
 										  }
 										  (g_bt[gantt_index])++;
 										  */
-					time++;//?�간?�름
+					
+					
+					if (at_index < num_proc && time + 1 >= procs[at_index].at) {	//도착한 프로세스 푸쉬
+						push(&front, &rear, num_proc + 1, at_index, queue);
+						at_index++;
+					}
+					time++;//?œê°„?ë¦„
 					continue;
 				}
-				if (procs[queue_index].p == g_p[gantt_index - 1]) {	//?� ?�로?�스랑 ?� ?�로?��??�?�하�?간?�인덱�??�지
+				if (procs[queue_index].p == g_p[gantt_index - 1]) {	//?„ ?„ë¡œ?¸ìŠ¤ëž‘ ?„ ?„ë¡œ?¸ìŠ??™?¼í•˜ë©?ê°„?¸ì¸ë±ìŠ?? ì§€
 					gantt_index--;
 				}
 				else {
@@ -95,27 +101,27 @@ void RR(DATA* data)
 				index = 0;
 			}
 
-			for (int i = 0; i < num_proc; i++) {	//?�행???�?�지 ?�?� ?�로?�스�? ?�행?�지 ?�?� ?�로?�스들의 ?�기시간 증가
+			for (int i = 0; i < num_proc; i++) {	//?¤í–‰????˜ì§€ ?Š?€ ?„ë¡œ?¸ìŠ¤ì? ?¤í–‰?˜ì§€ ?Š?€ ?„ë¡œ?¸ìŠ¤ë“¤ì˜ ?€ê¸°ì‹œê°„ ì¦ê°€
 				if (i != queue_index && procs[i].at <= time && (procs[i].c == -1))
 					(procs[i].wt)++;
 			}
-			(procs[queue_index].rem)--;//?�행중???�로?�스의 remain time 감?�
+			(procs[queue_index].rem)--;//?¤í–‰ì¤‘???„ë¡œ?¸ìŠ¤ì˜ remain time ê°?Œ
 			(g_bt[gantt_index])++;
 
-			if (at_index < num_proc && time + 1 >= procs[at_index].at) {	//?�착한 ?�로?��??��?
+			if (at_index < num_proc && time + 1 >= procs[at_index].at) {	//?„ì°©í•œ ?„ë¡œ?¸ìŠ??¸ì‰?
 				push(&front, &rear, num_proc + 1, at_index, queue);
 				at_index++;
 
 			}
 
-			if (procs[queue_index].et == -1) procs[queue_index].et = time;//?�로?�스�? 최초로 ?�행?� ?�간?� et?� ?�??
-			if (procs[queue_index].rem == 0)	//?�행?�료?�???�로?��?바꿔주기
+			if (procs[queue_index].et == -1) procs[queue_index].et = time;//?„ë¡œ?¸ìŠ¤ê? ìµœì´ˆë¡œ ?¤í–‰?œ ?œê°„?„ et? ?€??
+			if (procs[queue_index].rem == 0)	//?¤í–‰?„ë£Œ?˜???„ë¡œ?¸ìŠ?ë°”ê¿”ì£¼ê¸°
 			{
 				procs[queue_index].ct = time + 1;
 				procs[queue_index].tat = procs[queue_index].ct - procs[queue_index].at;
 				procs[queue_index].c = 0;
-				N = N - 1;//?�행가?�한 ?�로?��??� 감?�
-				if (N == 0) {//모든 ?�로?�스�? ?�행종료?� 경�?반복문 ?�출
+				N = N - 1;//?¤í–‰ê°€?¥í•œ ?„ë¡œ?¸ìŠ??˜ ê°?Œ
+				if (N == 0) {//ëª¨ë“  ?„ë¡œ?¸ìŠ¤ê? ?¤í–‰ì¢…ë£Œ?œ ê²½ìš?ë°˜ë³µë¬¸ ?ˆì¶œ
 					time++;
 					break;
 				}
@@ -124,7 +130,7 @@ void RR(DATA* data)
 
 
 			}
-			else if (tq == index + 1)	//time-quantom?� ?�???�로?��?바꿔주기
+			else if (tq == index + 1)	//time-quantom? ?˜???„ë¡œ?¸ìŠ?ë°”ê¿”ì£¼ê¸°
 			{
 
 				push(&front, &rear, num_proc + 1, queue_index, queue);
@@ -136,12 +142,12 @@ void RR(DATA* data)
 			else
 				index++;
 
-			time++;//?�간???�름
+			time++;//?œê°„???ë¦„
 
 		}
-		//?�로?��?종료
+		//?„ë¡œ?¸ì‹?ì¢…ë£Œ
 
-		qsort(procs, num_proc, sizeof(PROC), compare_p);//procs�??�시 pid?�?��? ?�??
+		qsort(procs, num_proc, sizeof(PROC), compare_p);//procsë¥??¤ì‹œ pid?œ?¼ë? ?•??
 
 
 		(data->g_p) = g_p;
@@ -153,9 +159,9 @@ void RR(DATA* data)
 
 		Print_table(data);
 
-		// 간??차�?그리�?
+		// ê°„??ì°¨íŠ?ê·¸ë¦¬ê¸?
 		Print_gantt(data);
-		// 간??차�??�
+		// ê°„??ì°¨íŠ??
 		
 
 	
