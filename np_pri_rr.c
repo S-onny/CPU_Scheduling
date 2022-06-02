@@ -139,10 +139,11 @@ void np_pri_rr(DATA *data)
 	free(pri_queue);
 
 
-	Print_table(data);
+	
 
 	// ê°„??ì°¨íŠ?ê·¸ë¦¬ê¸?
 	Print_gantt(data);
+	Print_table(data);
 	printf("\n\n");
 	Print_readyQueue(data);
 	// ê°„??ì°¨íŠ??
