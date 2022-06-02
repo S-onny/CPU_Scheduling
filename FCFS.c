@@ -78,12 +78,10 @@ void FCFS(DATA* data)
 		(data->g_et) = g_et;
 		(data->g_bt) = g_bt;
 		(data->gantt_index) = num_proc-1;
-
+		Print_gantt(data);
 		Print_table(data);
 
-		// 간트 차트 그리기
-		Print_gantt(data);
-		// 간트 차트 끝
+
 
 		printf("\n\n\n");
 
