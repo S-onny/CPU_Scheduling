@@ -97,7 +97,7 @@ void Print_table(DATA* datum) {
 	printf("-------------------------------------------------------------------------------------------\n");
 	for (int i = 0; i < np; i++)
 	{
-		printf(" Process[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\n", datum->procs[i].p, datum->procs[i].at, datum->procs[i].bt,datum->procs[i].pri, datum->procs[i].ct, datum->procs[i].wt, datum->procs[i].tat,datum->procs[i].et-datum->procs[i].at);
+		printf(" Process[%d]\t[%d]\t[%d]\t[%d]\t[%d]\t\t[%d]\t[%d]\t[%d]\n", datum->procs[i].p, datum->procs[i].at, datum->procs[i].bt,datum->procs[i].pri, datum->procs[i].ct, datum->procs[i].wt, datum->procs[i].tat,datum->procs[i].et-datum->procs[i].at);
 
 	}
 	printf("-------------------------------------------------------------------\n");
