@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "proc_data.h"
+#include "Print_readyqueue.h"
 #define INT_MAX	2147483647//int의 최댓값 define
 
 void np_priority(DATA* data)
@@ -120,6 +121,7 @@ void np_priority(DATA* data)
 		Print_gantt(data);
 		// 간트 차트 끝
 		// 간트 차트 끝
+	Print_readyQueue(data);
 
 		
 
