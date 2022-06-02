@@ -115,11 +115,11 @@ void np_priority(DATA* data)
 		(data->g_bt) = g_bt;
 		(data->gantt_index) = gantt_index;
 
-		Print_table(data);
+		
 
 		// 간트 차트 그리기
 		Print_gantt(data);
-		
+		Print_table(data);
 		// 간트 차트 끝
 	printf("\n\n\n");
 	Print_readyQueue(data);
