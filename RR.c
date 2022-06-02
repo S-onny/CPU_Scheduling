@@ -4,19 +4,6 @@
 #include "proc_data.h"
 #include "Print_readyqueue.h"
 
-void push(int* front, int* rear, int max, int value, int queue[]) {
-
-	*rear = (*rear + 1) % max;
-	queue[*rear] = value;
-}
-int pop(int* front, int* rear, int max, int queue[]) {
-	if (*rear == *front)
-		return -1;
-	*front = (*front + 1) % max;
-
-	return queue[*front];
-}
-
 void RR(DATA* data)
 {
 	int num_proc = data->num_proc;
