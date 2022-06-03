@@ -310,7 +310,7 @@ void al_rank(int * check,DATA* datas){
 			ranks[i].trt=(datas[i].trt);
 	}
 	while(1){
-		printf("Which metric? \n[1]Average Wait time\n[2]Average Turnaround time\n[3]Average Response time");
+		printf("Which metric? \n[1]Average Wait time\n[2]Average Turnaround time\n[3]Average Response time\n");
 		while(1){
 			printf("Enter:");
 			scanf("%d",&s);
