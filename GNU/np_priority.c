@@ -24,7 +24,7 @@ void np_priority(DATA* data)
 	int min_pri = INT_MAX;//실행가능한 프로세스 중 가장 짧은 남은시간
 	int min_pri_index = -1;// 실행가능한 프로세스중 가장 remain time이 짧은 프로세스의 index
 
-	int index = -1;
+	int index = -1;// if 0:continuelly execute, -1: execution end. start new.
 
 
 		qsort(procs, num_proc, sizeof(PROC), compare_a);//도착 순서대로 정렬(같을시 프로세스 번호대로)
