@@ -175,7 +175,6 @@ void SJF(DATA* data)
 				}
 			}
 		}
-		i = i + count;               // 정리가 끝난 프로세스들의 다음부터 다시 정리 시작
 	}
 
 
