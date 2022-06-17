@@ -12,6 +12,9 @@ Coding CPU Scheduling
 
 * CLI
 
+
+* 실행파일은 GNU폴더 내에 있습니다 (FINALEXE)
+
 #### Merge 하실때 그냥 master branch 하셔도 괜찮습니다!
 <!-- 
 ####5월 30저녁~31일 02:30 최창수-변경사항 요약: ####
